@@ -1,0 +1,110 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Python deps
+        run: |
+          pip install --upgrade pip
+          pip install pyyaml mkdocs-material
+
+      - name: Validate YAML configs
+        run: |
+          set -e
+          for f in \
+            configs/otel-collector/config.yaml \
+            configs/prometheus/prometheus.yml \
+            configs/tempo/tempo.yaml \
+            configs/pyroscope/pyroscope.yaml \
+            configs/grafana/provisioning/datasources/all.yaml \
+            configs/grafana/provisioning/dashboards/dashboards.yaml \
+            configs/grafana/provisioning/alerting/contact-points.yaml \
+            configs/grafana/provisioning/alerting/notification-policies.yaml \
+            alerts/default-rules.yaml \
+            mkdocs.yml \
+            templates/coolify/docker-compose.yml \
+            templates/dokploy/docker-compose.yml \
+            templates/caprover/caprover-one-click-app.yml; do
+            echo "Validating $f"
+            python3 -c "import yaml; yaml.safe_load(open('$f'))"
+          done
+
+      - name: Validate JSON templates and dashboards
+        run: |
+          set -e
+          for f in \
+            templates/coolify/coolify-template.json \
+            templates/dokploy/template.json \
+            templates/caprover/captain-definition \
+            templates/jelastic/manifest.jps \
+            templates/jelastic/linker.jps \
+            configs/grafana/dashboards/stack-health.json \
+            configs/grafana/dashboards/container-metrics.json \
+            configs/grafana/dashboards/logs-explorer.json \
+            configs/grafana/dashboards/traces-browser.json; do
+            echo "Validating $f"
+            python3 -c "import json; json.load(open('$f'))"
+          done
+
+      - name: Validate docker-compose merges
+        env:
+          BASIC_AUTH_HASH: 'placeholder-bcrypt-hash-only-for-config-render'
+        run: |
+          docker compose -f docker-compose.yml -f compose/simple.yml config --quiet
+          docker compose -f docker-compose.yml -f compose/simple.yml -f compose/otel-demo.yml config --quiet
+
+      - name: Validate Caddyfile
+        run: |
+          docker run --rm -v "$PWD/configs/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" \
+            caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+
+      - name: Validate OTel Collector config
+        run: |
+          docker run --rm -v "$PWD/configs/otel-collector/config.yaml:/etc/otelcol-contrib/config.yaml:ro" \
+            otel/opentelemetry-collector-contrib:0.111.0 validate --config=/etc/otelcol-contrib/config.yaml
+
+      - name: Validate Prometheus alert rules
+        run: |
+          docker run --rm -v "$PWD/alerts:/etc/prometheus/rules:ro" \
+            --entrypoint promtool prom/prometheus:v3.0.1 check rules /etc/prometheus/rules/default-rules.yaml
+
+      - name: Validate bash scripts (syntax)
+        run: |
+          set -e
+          for f in scripts/*.sh; do
+            echo "bash -n $f"
+            bash -n "$f"
+          done
+
+      - name: Build MkDocs site (strict)
+        run: |
+          mkdocs build --strict --site-dir /tmp/mkdocs-site
+
+  shellcheck:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run shellcheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: -e SC1091 -e SC2086
+        with:
+          scandir: scripts
