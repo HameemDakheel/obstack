@@ -10,4 +10,9 @@ providers:
     updateIntervalSeconds: 30
     options:
       path: /etc/grafana/dashboards
-      foldersFromFilesStructure: true
+      # foldersFromFilesStructure must be false (or omitted) for the
+      # `folder:` field above to take effect. With it set to true, Grafana
+      # ignores the named folder and uses subdirectory structure instead,
+      # which puts all dashboards in the General folder when files live at
+      # the path root.
+      foldersFromFilesStructure: false
