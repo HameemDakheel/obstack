@@ -1,0 +1,37 @@
+{
+  "title": "OTel-jps · Traces Browser",
+  "uid": "otel-jps-traces-browser",
+  "tags": ["otel-jps", "traces"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-15m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "nodeGraph",
+      "title": "Service graph",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 12 },
+      "datasource": { "uid": "tempo", "type": "tempo" },
+      "targets": [{ "queryType": "serviceMap", "refId": "A" }]
+    },
+    {
+      "id": 2,
+      "type": "heatmap",
+      "title": "Span duration heatmap (from Tempo metrics_generator)",
+      "gridPos": { "x": 0, "y": 12, "w": 24, "h": 10 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "sum(rate(traces_spanmetrics_latency_bucket[1m])) by (le)",
+        "format": "heatmap",
+        "legendFormat": "{{le}}",
+        "refId": "A"
+      }],
+      "options": {
+        "calculate": false,
+        "yAxis": { "axisPlacement": "left", "unit": "s" }
+      }
+    }
+  ]
+}

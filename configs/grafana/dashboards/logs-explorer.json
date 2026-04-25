@@ -1,0 +1,38 @@
+{
+  "title": "OTel-jps · Logs Explorer",
+  "uid": "otel-jps-logs-explorer",
+  "tags": ["otel-jps", "logs"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "logs",
+      "title": "Recent logs",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 14 },
+      "datasource": { "uid": "victorialogs", "type": "victoriametrics-logs-datasource" },
+      "targets": [{ "expr": "*", "refId": "A" }],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "sortOrder": "Descending"
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Total log volume (last 1h)",
+      "gridPos": { "x": 0, "y": 14, "w": 8, "h": 6 },
+      "datasource": { "uid": "victorialogs", "type": "victoriametrics-logs-datasource" },
+      "targets": [{ "expr": "* | stats count() as total", "refId": "A" }]
+    }
+  ]
+}

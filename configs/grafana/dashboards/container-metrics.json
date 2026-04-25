@@ -1,0 +1,64 @@
+{
+  "title": "OTel-jps · Container Metrics",
+  "uid": "otel-jps-container-metrics",
+  "tags": ["otel-jps", "containers", "cadvisor"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-15m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "CPU usage by container (cores)",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "rate(container_cpu_usage_seconds_total{name=~\"otel-jps-.*\"}[1m])",
+        "legendFormat": "{{name}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Memory usage by container (MiB)",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "container_memory_usage_bytes{name=~\"otel-jps-.*\"} / 1024 / 1024",
+        "legendFormat": "{{name}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "decmbytes" }, "overrides": [] }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Network RX (bytes/s)",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "rate(container_network_receive_bytes_total{name=~\"otel-jps-.*\"}[1m])",
+        "legendFormat": "{{name}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "Bps" }, "overrides": [] }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Network TX (bytes/s)",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "rate(container_network_transmit_bytes_total{name=~\"otel-jps-.*\"}[1m])",
+        "legendFormat": "{{name}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "Bps" }, "overrides": [] }
+    }
+  ]
+}
