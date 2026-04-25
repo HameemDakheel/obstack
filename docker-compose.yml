@@ -129,3 +129,23 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+
+  pyroscope:
+    image: grafana/pyroscope:1.10.0
+    container_name: otel-jps-pyroscope
+    restart: unless-stopped
+    networks:
+      - obs-net
+    command: ["-config.file=/etc/pyroscope/pyroscope.yaml"]
+    volumes:
+      - ./configs/pyroscope/pyroscope.yaml:/etc/pyroscope/pyroscope.yaml:ro
+      - pyroscope_data:/data
+    expose:
+      - "4040"
+    environment:
+      PYROSCOPE_RETENTION_HOURS: ${PYROSCOPE_RETENTION_HOURS:-336}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4040/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 5

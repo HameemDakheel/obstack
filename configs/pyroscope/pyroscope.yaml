@@ -1,0 +1,21 @@
+# Pyroscope monolithic config — Simple profile.
+
+server:
+  http_listen_port: 4040
+
+storage:
+  backend: filesystem
+  filesystem:
+    dir: /data/pyroscope
+
+pyroscopedb:
+  data_path: /data/pyroscope-db
+
+limits:
+  retention_period: ${PYROSCOPE_RETENTION_HOURS:-336}h
+  max_query_lookback: 720h
+  ingestion_rate_mb: 12
+  ingestion_burst_size_mb: 24
+
+analytics:
+  reporting_enabled: false

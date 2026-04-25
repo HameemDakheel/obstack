@@ -42,3 +42,11 @@ services:
           memory: 512M
         reservations:
           memory: 192M
+
+  pyroscope:
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+        reservations:
+          memory: 128M
