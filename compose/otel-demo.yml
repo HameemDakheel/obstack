@@ -1,0 +1,95 @@
+# OTel Demo overlay — opt-in evaluation mode.
+# Pulls a curated subset of open-telemetry/opentelemetry-demo (Astronomy Shop)
+# and reroutes their telemetry to our OTel Collector.
+#
+# Apply with:
+#   docker compose -f docker-compose.yml -f compose/simple.yml -f compose/otel-demo.yml up -d
+#
+# Requires ~4-6 GB extra RAM. NOT for production single-VPS use.
+# License: services are pulled from public images; demo is Apache 2.0.
+
+x-otel-env: &otel-env
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+  OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+  OTEL_SERVICE_NAME_PREFIX: demo
+  OTEL_RESOURCE_ATTRIBUTES: deployment.environment=demo
+
+services:
+  demo-frontend:
+    image: ghcr.io/open-telemetry/demo:1.12.0-frontend
+    container_name: otel-jps-demo-frontend
+    restart: unless-stopped
+    networks: [obs-net]
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: demo.frontend
+      FRONTEND_PORT: "8080"
+      AD_SERVICE_ADDR: demo-recommendation:9001
+      CART_SERVICE_ADDR: demo-cart:7070
+      CHECKOUT_SERVICE_ADDR: demo-checkout:5050
+      PAYMENT_SERVICE_ADDR: demo-payment:50051
+    ports:
+      - "8082:8080"
+
+  demo-cart:
+    image: ghcr.io/open-telemetry/demo:1.12.0-cart
+    container_name: otel-jps-demo-cart
+    restart: unless-stopped
+    networks: [obs-net]
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: demo.cart
+      CART_SERVICE_PORT: "7070"
+      VALKEY_ADDR: demo-valkey:6379
+    depends_on: [demo-valkey]
+
+  demo-valkey:
+    image: valkey/valkey:7.2-alpine
+    container_name: otel-jps-demo-valkey
+    restart: unless-stopped
+    networks: [obs-net]
+
+  demo-checkout:
+    image: ghcr.io/open-telemetry/demo:1.12.0-checkout
+    container_name: otel-jps-demo-checkout
+    restart: unless-stopped
+    networks: [obs-net]
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: demo.checkout
+      CHECKOUT_SERVICE_PORT: "5050"
+      CART_SERVICE_ADDR: demo-cart:7070
+      PAYMENT_SERVICE_ADDR: demo-payment:50051
+
+  demo-payment:
+    image: ghcr.io/open-telemetry/demo:1.12.0-payment
+    container_name: otel-jps-demo-payment
+    restart: unless-stopped
+    networks: [obs-net]
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: demo.payment
+      PAYMENT_SERVICE_PORT: "50051"
+
+  demo-recommendation:
+    image: ghcr.io/open-telemetry/demo:1.12.0-recommendation
+    container_name: otel-jps-demo-recommendation
+    restart: unless-stopped
+    networks: [obs-net]
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: demo.recommendation
+      RECOMMENDATION_SERVICE_PORT: "9001"
+
+  demo-load-generator:
+    image: ghcr.io/open-telemetry/demo:1.12.0-loadgenerator
+    container_name: otel-jps-demo-loadgen
+    restart: unless-stopped
+    networks: [obs-net]
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: demo.loadgen
+      LOCUST_HOST: http://demo-frontend:8080
+      LOCUST_USERS: "5"
+      LOCUST_SPAWN_RATE: "1"
+    depends_on: [demo-frontend]
