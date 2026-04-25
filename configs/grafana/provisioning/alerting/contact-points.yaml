@@ -7,7 +7,7 @@ contactPoints:
       - uid: default-webhook
         type: webhook
         settings:
-          url: ${ALERT_WEBHOOK_URL:-https://example.invalid/alert}
+          url: $ALERT_WEBHOOK_URL
           httpMethod: POST
           maxAlerts: 0
         disableResolveMessage: false
