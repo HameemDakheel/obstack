@@ -1,0 +1,86 @@
+# OpenTelemetry Collector contrib config — Simple profile.
+# Receives OTLP, fans out to Prometheus (metrics), VictoriaLogs (logs),
+# and Tempo (traces). Profiles export to Pyroscope is wired in Phase 2.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+  # Self-monitoring: scrape the collector's own /metrics
+  prometheus/self:
+    config:
+      scrape_configs:
+        - job_name: otel-collector-self
+          scrape_interval: 30s
+          static_configs:
+            - targets: ['localhost:8888']
+
+processors:
+  memory_limiter:
+    check_interval: 5s
+    limit_percentage: 75
+    spike_limit_percentage: 25
+
+  batch:
+    timeout: 200ms
+    send_batch_size: 8192
+    send_batch_max_size: 16384
+
+  resourcedetection:
+    detectors: [env, system]
+    timeout: 2s
+
+exporters:
+  # Metrics → Prometheus remote-write
+  prometheusremotewrite:
+    endpoint: http://prometheus:9090/api/v1/write
+    tls:
+      insecure: true
+    resource_to_telemetry_conversion:
+      enabled: true
+
+  # Logs → VictoriaLogs OTLP receiver
+  otlphttp/logs:
+    endpoint: http://victorialogs:9428/insert/opentelemetry
+    tls:
+      insecure: true
+
+  # Traces → Tempo OTLP HTTP
+  otlphttp/tempo:
+    endpoint: http://tempo:4318
+    tls:
+      insecure: true
+
+  # NOTE: profiles export to Pyroscope is wired in Phase 2 (Stack Polish).
+  # Reason: OTel Collector contrib's profiles signal is still maturing; we keep
+  # Phase 1 strictly to the stable receivers/exporters to ensure the stack boots.
+
+  debug:
+    verbosity: basic
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+service:
+  extensions: [health_check]
+  telemetry:
+    metrics:
+      address: 0.0.0.0:8888
+  pipelines:
+    metrics:
+      receivers: [otlp, prometheus/self]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [prometheusremotewrite]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [otlphttp/logs]
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [otlphttp/tempo]

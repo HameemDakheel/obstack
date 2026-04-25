@@ -10,3 +10,11 @@ services:
           memory: 128M
         reservations:
           memory: 32M
+
+  otel-collector:
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 96M

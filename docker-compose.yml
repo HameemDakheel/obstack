@@ -42,3 +42,23 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.111.0
+    container_name: otel-jps-otelcol
+    restart: unless-stopped
+    networks:
+      - obs-net
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./configs/otel-collector/config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    expose:
+      - "4317"   # gRPC OTLP (Caddy fronts this)
+      - "4318"   # HTTP OTLP
+      - "8888"   # Self-metrics
+      - "13133"  # health_check
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:13133/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
