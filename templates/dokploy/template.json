@@ -1,0 +1,71 @@
+{
+  "id": "otel-jps",
+  "name": "OTel-jps",
+  "version": "v1.0.0-alpha.4",
+  "description": "Production observability for your $20/month VPS — all 5 signals, one command. OpenTelemetry-native: Prometheus + VictoriaLogs + Tempo + Pyroscope + Grafana + OTel Collector + Caddy. ~310 MB idle.",
+  "logo": "https://raw.githubusercontent.com/HameemDakheel/OTel-jps/main/assets/logo.png",
+  "links": {
+    "github": "https://github.com/HameemDakheel/OTel-jps",
+    "website": "https://otel-jps.dev",
+    "docs": "https://github.com/HameemDakheel/OTel-jps/blob/main/docs/deployment/dokploy.md"
+  },
+  "tags": ["observability", "monitoring", "opentelemetry", "grafana", "prometheus", "tempo", "pyroscope", "victorialogs"],
+  "envs": [
+    {
+      "name": "DOMAIN",
+      "value": "obs.example.com",
+      "description": "Public hostname Caddy will issue a Let's Encrypt cert for"
+    },
+    {
+      "name": "ACME_EMAIL",
+      "value": "admin@example.com",
+      "description": "Email reported to Let's Encrypt during cert issuance"
+    },
+    {
+      "name": "GRAFANA_ADMIN_USER",
+      "value": "admin",
+      "description": "Grafana login username"
+    },
+    {
+      "name": "GRAFANA_ADMIN_PASSWORD",
+      "value": "${randomPassword}",
+      "description": "Grafana admin password (auto-generated)"
+    },
+    {
+      "name": "BASIC_AUTH_USER",
+      "value": "ingest",
+      "description": "Username your apps use to authenticate to OTLP ingestion"
+    },
+    {
+      "name": "BASIC_AUTH_HASH",
+      "value": "${input}",
+      "description": "bcrypt hash of OTLP password — generate with: docker run --rm caddy:2-alpine caddy hash-password --plaintext 'YOUR_PASSWORD'"
+    },
+    {
+      "name": "PROMETHEUS_RETENTION",
+      "value": "7d",
+      "description": "How long Prometheus keeps metrics"
+    },
+    {
+      "name": "VICTORIALOGS_RETENTION",
+      "value": "7d",
+      "description": "How long VictoriaLogs keeps logs"
+    },
+    {
+      "name": "TEMPO_RETENTION_HOURS",
+      "value": "72",
+      "description": "Tempo trace retention (hours)"
+    },
+    {
+      "name": "PYROSCOPE_RETENTION_HOURS",
+      "value": "336",
+      "description": "Pyroscope profile retention (hours, default 14 d)"
+    },
+    {
+      "name": "ALERT_WEBHOOK_URL",
+      "value": "https://example.invalid/alert",
+      "description": "Slack/Discord/PagerDuty webhook for default alerts"
+    }
+  ],
+  "compose": "./docker-compose.yml"
+}
