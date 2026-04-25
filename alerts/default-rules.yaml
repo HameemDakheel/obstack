@@ -1,0 +1,111 @@
+groups:
+  - name: otel-jps-default
+    interval: 30s
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.job }} is down"
+          description: "{{ $labels.job }} has been unreachable for more than 2 minutes."
+
+      - alert: PrometheusTargetMissing
+        expr: absent(up{job="prometheus-self"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Prometheus self-scrape missing"
+          description: "Prometheus has not scraped itself in 5 minutes — meta-monitoring broken."
+
+      - alert: HighIngestionDrop
+        expr: rate(otelcol_receiver_refused_spans_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "OTel Collector is dropping spans"
+          description: "OTel Collector refused {{ $value }} spans/sec in the last 5 minutes."
+
+      - alert: HighMemoryUsage
+        expr: (container_memory_usage_bytes{name=~"otel-jps-.*"} / container_spec_memory_limit_bytes{name=~"otel-jps-.*"}) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.name }} memory >85%"
+          description: "Container {{ $labels.name }} is using {{ $value | humanizePercentage }} of its memory limit."
+
+      - alert: HighCPUUsage
+        expr: rate(container_cpu_usage_seconds_total{name=~"otel-jps-.*"}[5m]) > 0.9
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.name }} CPU >90%"
+          description: "Container {{ $labels.name }} is using {{ $value }} CPU cores."
+
+      - alert: PrometheusHighCardinality
+        expr: prometheus_tsdb_head_series > 1000000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Prometheus head series >1M"
+          description: "Prometheus has {{ $value }} active series. Risk of memory blowup."
+
+      - alert: TempoIngestErrors
+        expr: rate(tempo_distributor_ingester_clients[5m]) == 0 and tempo_distributor_ingester_clients > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Tempo ingester connectivity issue"
+          description: "Tempo distributor cannot reach ingesters."
+
+      - alert: GrafanaDown
+        expr: up{job="grafana"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Grafana is down"
+          description: "Grafana has been unreachable for 2 minutes — users have no UI."
+
+      - alert: OTelCollectorQueueFull
+        expr: otelcol_exporter_queue_size / otelcol_exporter_queue_capacity > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "OTel Collector exporter queue >80% full"
+          description: "Queue {{ $labels.exporter }} is {{ $value | humanizePercentage }} full — backpressure imminent."
+
+      - alert: ContainerRestartLoop
+        expr: changes(container_start_time_seconds{name=~"otel-jps-.*"}[10m]) > 3
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.name }} restart-looping"
+          description: "Container {{ $labels.name }} has restarted {{ $value }} times in 10 minutes."
+
+      - alert: DiskUsageHigh
+        expr: 100 - ((node_filesystem_avail_bytes{mountpoint="/"} * 100) / node_filesystem_size_bytes{mountpoint="/"}) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Root disk >80%"
+          description: "Root filesystem usage is {{ $value | humanizePercentage }}."
+
+      - alert: VictoriaLogsIngestSlowdown
+        expr: rate(vl_rows_ingested_total[5m]) == 0 and on() (rate(otelcol_receiver_accepted_log_records_total[5m]) > 0)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "VictoriaLogs not ingesting despite collector accepting logs"
+          description: "OTel Collector is accepting logs but VictoriaLogs ingestion rate is zero — pipeline broken."

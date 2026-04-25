@@ -81,6 +81,7 @@ services:
       - --web.listen-address=0.0.0.0:9090
     volumes:
       - ./configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alerts:/etc/prometheus/rules:ro
       - prometheus_data:/prometheus
     expose:
       - "9090"
