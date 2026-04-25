@@ -106,3 +106,26 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+
+  tempo:
+    image: grafana/tempo:2.6.1
+    container_name: otel-jps-tempo
+    restart: unless-stopped
+    networks:
+      - obs-net
+    command: ["-config.file=/etc/tempo/tempo.yaml"]
+    volumes:
+      - ./configs/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+      - tempo_data:/var/tempo
+    expose:
+      - "3200"   # HTTP query
+      - "4317"   # OTLP gRPC
+      - "4318"   # OTLP HTTP (collector pushes here)
+      - "9095"   # gRPC native
+    environment:
+      TEMPO_RETENTION_HOURS: ${TEMPO_RETENTION_HOURS:-72}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3200/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
