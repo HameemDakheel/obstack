@@ -58,6 +58,10 @@ nav:
       - Profiles: profiles.md
   - Deployment:
       - Docker Compose: deployment/docker-compose.md
+      - Coolify: deployment/coolify.md
+      - Dokploy: deployment/dokploy.md
+      - CapRover: deployment/caprover.md
+      - Jelastic: deployment/jelastic.md
   - Instrumentation:
       - Node.js: instrumentation/nodejs.md
       - Python: instrumentation/python.md
