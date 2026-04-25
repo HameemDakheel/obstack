@@ -1,39 +1,53 @@
 {
   "jpsType": "install",
   "jpsVersion": "1.7",
-  "name": "Grafana LGTM+P Stack (Production Ready)",
-  "id": "lgtm-stack",
-  "version": "1.0.0",
-  "logo": "https://grafana.com/static/assets/img/grafana_icon.svg",
-  "description": "Sovereign Observability Stack: Loki (Logs), Grafana (UI), Tempo (Traces), Mimir (Metrics), Pyroscope (Profiles) with MinIO object storage",
-  "homepage": "https://grafana.com",
+  "name": "OTel-jps — Production observability for your $20/month VPS",
+  "id": "otel-jps",
+  "version": "1.0.0-alpha.4",
+  "logo": "https://raw.githubusercontent.com/HameemDakheel/OTel-jps/main/assets/logo.png",
+  "description": "OpenTelemetry-native observability stack: Prometheus, VictoriaLogs, Tempo, Pyroscope, Grafana, OTel Collector, Caddy. ~310 MB idle. All 5 signals on a 4 GB VPS.",
+  "homepage": "https://github.com/HameemDakheel/OTel-jps",
 
   "categories": ["apps/observability", "apps/monitoring"],
 
   "globals": {
-    "MINIO_AK": "${fn.password(20)}",
-    "MINIO_SK": "${fn.password(40)}",
     "GRAFANA_PW": "${fn.password(16)}",
-    "OTLP_KEY": "${fn.password(24)}",
-    "STACK_PATH": "/opt/observability",
-    "REPO_URL": "${settings.repoUrl:https://github.com/HameemDakheel/OTel-jps.git}"
+    "BASIC_AUTH_USER": "ingest",
+    "BASIC_AUTH_PW": "${fn.password(24)}",
+    "STACK_PATH": "/opt/otel-jps",
+    "REPO_URL": "${settings.repoUrl:https://github.com/HameemDakheel/OTel-jps.git}",
+    "REPO_REF": "${settings.repoRef:v1.0.0-alpha.4}"
   },
 
   "settings": {
     "fields": [
       {
         "name": "repoUrl",
-        "caption": "Git Repository URL",
+        "caption": "Git repository URL",
         "type": "string",
         "default": "https://github.com/HameemDakheel/OTel-jps.git",
         "required": true
       },
       {
-        "name": "envName",
-        "caption": "Environment Name",
+        "name": "repoRef",
+        "caption": "Git tag or branch",
         "type": "string",
-        "default": "observability",
+        "default": "v1.0.0-alpha.4",
         "required": true
+      },
+      {
+        "name": "envName",
+        "caption": "Environment name",
+        "type": "string",
+        "default": "otel-jps",
+        "required": true
+      },
+      {
+        "name": "alertWebhookUrl",
+        "caption": "Alert webhook URL (Slack/Discord/PagerDuty)",
+        "type": "string",
+        "default": "https://example.invalid/alert",
+        "required": false
       }
     ]
   },
@@ -42,18 +56,18 @@
     {
       "nodeType": "dockerengine",
       "nodeGroup": "cp",
-      "displayName": "Observability Stack",
+      "displayName": "OTel-jps stack",
       "count": 1,
-      "cloudlets": 32,
-      "fixedCloudlets": 8,
-      "diskLimit": 100,
+      "cloudlets": 24,
+      "fixedCloudlets": 4,
+      "diskLimit": 50,
       "ssl": true,
       "isSLBAccessEnabled": true,
       "env": {
-        "MINIO_AK": "${globals.MINIO_AK}",
-        "MINIO_SK": "${globals.MINIO_SK}",
         "GRAFANA_PW": "${globals.GRAFANA_PW}",
-        "JELASTIC_PORTS": "80,443,3000,3100,3200,4317,4318,4319,4320,7946,9000,9001,9096,12345"
+        "BASIC_AUTH_USER": "${globals.BASIC_AUTH_USER}",
+        "BASIC_AUTH_PW": "${globals.BASIC_AUTH_PW}",
+        "JELASTIC_PORTS": "80,443,4317"
       }
     }
   ],
@@ -61,94 +75,95 @@
   "onInstall": [
     { "call": "installDependencies" },
     { "call": "deployStack" },
-    { "call": "requestCert" },
     { "call": "waitForServices" }
   ],
 
   "actions": {
     "installDependencies": {
       "cmd[cp]": [
-        "yum install -y git jq gettext httpd-tools || true"
+        "yum install -y git make jq || apt-get update && apt-get install -y git make jq"
       ]
     },
 
     "deployStack": {
       "cmd[cp]": [
+        "set -e",
         "mkdir -p ${globals.STACK_PATH}",
         "cd ${globals.STACK_PATH}",
-        "if [ ! -d .git ]; then git init && git remote add origin ${globals.REPO_URL} && git fetch && git checkout -f main; else git fetch && git reset --hard origin/main; fi",
-        "mkdir -p data/certs/live/${env.domain}",
-        "if [ ! -f data/certs/live/${env.domain}/fullchain.pem ]; then openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout data/certs/live/${env.domain}/privkey.pem -out data/certs/live/${env.domain}/fullchain.pem -subj '/CN=${env.domain}'; fi",
-        "mkdir -p configs/nginx",
-        "htpasswd -bc configs/nginx/.htpasswd otlp ${globals.OTLP_KEY}",
-        "echo 'MINIO_ROOT_USER=${globals.MINIO_AK}' > .env",
-        "echo 'MINIO_ROOT_PASSWORD=${globals.MINIO_SK}' >> .env",
-        "echo 'GRAFANA_PASSWORD=${globals.GRAFANA_PW}' >> .env",
-        "echo 'DOMAIN=${env.domain}' >> .env",
-        "echo 'SSL_EMAIL=admin@${env.domain}' >> .env",
+        "if [ ! -d .git ]; then git init && git remote add origin ${globals.REPO_URL} && git fetch --depth 1 origin ${globals.REPO_REF} && git checkout -f FETCH_HEAD; else git fetch --depth 1 origin ${globals.REPO_REF} && git reset --hard FETCH_HEAD; fi",
+        "BASIC_AUTH_HASH=$(docker run --rm caddy:2-alpine caddy hash-password --plaintext '${globals.BASIC_AUTH_PW}')",
+        "cat > .env <<ENVEOF",
+        "DOMAIN=${env.domain}",
+        "ACME_EMAIL=admin@${env.domain}",
+        "GRAFANA_ADMIN_USER=admin",
+        "GRAFANA_ADMIN_PASSWORD=${globals.GRAFANA_PW}",
+        "BASIC_AUTH_USER=${globals.BASIC_AUTH_USER}",
+        "BASIC_AUTH_HASH=${BASIC_AUTH_HASH}",
+        "PROMETHEUS_RETENTION=7d",
+        "VICTORIALOGS_RETENTION=7d",
+        "TEMPO_RETENTION_HOURS=72",
+        "PYROSCOPE_RETENTION_HOURS=336",
+        "STACK_PROFILE=simple",
+        "ALERT_WEBHOOK_URL=${settings.alertWebhookUrl}",
+        "ENVEOF",
         "chmod 600 .env",
-        "mkdir -p data/grafana && chown -R 472:472 data/grafana",
-        "chmod +x scripts/prepare_configs.sh",
-        "./scripts/prepare_configs.sh",
-        "echo 'Versions:' && (docker-compose version || docker compose version)",
-        "docker-compose pull -q || docker compose pull -q",
-        "(docker-compose up -d --remove-orphans || docker compose up -d --remove-orphans) || (echo '--- START ERROR LOGS ---' && (docker-compose logs --tail 200 || docker compose logs --tail 200) && echo '--- END ERROR LOGS ---' && echo '--- CONTAINER STATUS ---' && (docker-compose ps -a || docker compose ps -a) && exit 1)"
+        "make simple || (echo '--- compose logs ---' && docker compose -f docker-compose.yml -f compose/simple.yml logs --tail 200 && exit 1)"
       ]
     },
 
-
     "waitForServices": {
       "cmd[cp]": [
-        "echo 'Waiting for services to be healthy...'",
-        "sleep 60",
-        "cd ${globals.STACK_PATH} && (docker-compose ps || docker compose ps)",
-        "echo 'Checking Grafana...'",
-        "curl -sf http://localhost:3000/api/health || echo 'Grafana not ready yet'",
-        "echo 'Checking Mimir...'",
-        "curl -sf http://localhost:9009/ready || echo 'Mimir not ready yet'",
-        "echo 'Checking Pyroscope...'",
-        "curl -sf http://localhost:4040/ready || echo 'Pyroscope not ready yet'",
-        "echo 'Checking Alloy...'",
-        "curl -sf http://localhost:12345/ || echo 'Alloy not ready yet'",
-        "echo 'Deployment complete!'"
+        "echo 'Waiting ~45s for services to settle...'",
+        "sleep 45",
+        "cd ${globals.STACK_PATH} && docker compose -f docker-compose.yml -f compose/simple.yml ps",
+        "cd ${globals.STACK_PATH} && ./scripts/verify_stack.sh || (echo 'Verification failed; see logs above' && exit 1)",
+        "echo 'OTel-jps deployment complete!'"
       ]
     },
 
     "upgrade": {
       "cmd[cp]": [
         "cd ${globals.STACK_PATH}",
-        "git pull",
-        "docker-compose pull || docker compose pull",
-        "docker-compose up -d --remove-orphans || docker compose up -d --remove-orphans"
+        "git fetch --depth 1 origin ${globals.REPO_REF}",
+        "git reset --hard FETCH_HEAD",
+        "make update"
       ]
     },
 
     "restart": {
       "cmd[cp]": [
         "cd ${globals.STACK_PATH}",
-        "docker-compose restart || docker compose restart"
+        "make restart"
       ]
     },
 
     "logs": {
       "cmd[cp]": [
         "cd ${globals.STACK_PATH}",
-        "docker-compose logs --tail=100 || docker compose logs --tail=100"
+        "docker compose -f docker-compose.yml -f compose/simple.yml logs --tail=100"
       ]
     },
+
+    "verify": {
+      "cmd[cp]": [
+        "cd ${globals.STACK_PATH}",
+        "./scripts/verify_stack.sh"
+      ]
+    },
+
     "checkStack": {
       "cmd[cp]": [
         "cd ${globals.STACK_PATH}",
         "echo '--- CONTAINER STATUS ---'",
-        "docker-compose ps || docker compose ps",
+        "docker compose -f docker-compose.yml -f compose/simple.yml ps",
         "echo '--- RECENT LOGS ---'",
-        "docker-compose logs --tail=20 || docker compose logs --tail=20"
+        "docker compose -f docker-compose.yml -f compose/simple.yml logs --tail=20"
       ]
     }
   },
 
   "success": {
-    "text": "## LGTM+P Stack Ready!\n\n### Access URLs\n- **Grafana**: https://${env.domain}\n- **MinIO Console**: https://${env.domain}/minio/\n- **Alloy UI**: https://${env.domain}/alloy/ (User: `otlp` / Pass: `${globals.OTLP_KEY}`)\n\n### Credentials\n- **Grafana**: `admin` / `${globals.GRAFANA_PW}`\n- **OTLP Ingestion (Basic Auth)**: User: `otlp` / Pass: `${globals.OTLP_KEY}`\n- **MinIO Access Key**: `${globals.MINIO_AK}`\n- **MinIO Secret Key**: `${globals.MINIO_SK}`\n\n### OTLP Endpoint (HTTPS)\n- `https://${env.domain}/v1/` (Requires Basic Auth Header)",
-    "email": "## LGTM+P Stack Ready!\n\n**Grafana**: https://${env.domain}\n**User**: admin\n**Password**: ${globals.GRAFANA_PW}\n\n**OTLP Ingestion (Basic Auth)**\n**User**: otlp\n**Password**: `${globals.OTLP_KEY}`\n\n**MinIO Access Key**: `${globals.MINIO_AK}`\n**MinIO Secret Key**: `${globals.MINIO_SK}`\n\n**OTLP (HTTPS)**: https://${env.domain}/v1/"
+    "text": "## OTel-jps is ready\n\n### Open Grafana\n- **URL**: https://${env.domain}\n- **User**: `admin`\n- **Password**: `${globals.GRAFANA_PW}`\n\n### Send telemetry from your apps\n\n- **OTLP HTTP**: `https://${env.domain}/v1/{traces,metrics,logs}`\n- **OTLP gRPC**: `${env.domain}:4317`\n\nAuthentication (HTTP Basic):\n- **Username**: `${globals.BASIC_AUTH_USER}`\n- **Password**: `${globals.BASIC_AUTH_PW}`\n\nFor SDK env vars:\n```\nOTEL_EXPORTER_OTLP_ENDPOINT=https://${env.domain}\nOTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf\nOTEL_EXPORTER_OTLP_HEADERS=authorization=Basic <base64('${globals.BASIC_AUTH_USER}:${globals.BASIC_AUTH_PW}')>\n```\n\n### Next steps\n- Browse the 4 pre-built dashboards in Grafana → **OTel-jps** folder\n- Read the [Quickstart](https://github.com/HameemDakheel/OTel-jps/blob/main/docs/quickstart.md) and [instrumentation guides](https://github.com/HameemDakheel/OTel-jps/tree/main/docs/instrumentation)\n- Use the **Connect to OTel-jps** add-on (linker.jps) to auto-configure other Jelastic apps to send telemetry here.",
+    "email": "## OTel-jps Deployed\n\n**Grafana**: https://${env.domain}\n- User: `admin` / Pass: `${globals.GRAFANA_PW}`\n\n**OTLP ingestion**: https://${env.domain}/v1/...\n- User: `${globals.BASIC_AUTH_USER}` / Pass: `${globals.BASIC_AUTH_PW}`"
   }
 }
