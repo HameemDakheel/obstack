@@ -1,0 +1,5 @@
+# Standard profile overlay (placeholder — ships in v1.1).
+# Targets: small team, single beefy server (~8 GB RAM).
+# Currently contains no service blocks; use compose/simple.yml until v1.1 ships.
+
+services: {}

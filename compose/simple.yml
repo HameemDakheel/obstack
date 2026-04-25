@@ -1,0 +1,5 @@
+# Simple profile overlay.
+# Targets: solo dev / indie SaaS, single VPS with 4 GB RAM.
+# Apply with: docker compose -f docker-compose.yml -f compose/simple.yml up -d
+
+services: {}

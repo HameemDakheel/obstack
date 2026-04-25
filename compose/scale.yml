@@ -1,0 +1,5 @@
+# Scale profile overlay (placeholder — ships in v2).
+# Targets: multi-node, growing team, ~16+ GB RAM with HA storage.
+# Currently contains no service blocks.
+
+services: {}
