@@ -1,229 +1,162 @@
-# 🔭 Sovereign Observability Stack (LGTM+P)
+# OTel-jps
 
-> **Simple to Start, Ready to Scale** — Production-ready Grafana observability stack on Jelastic PaaS
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Stars](https://img.shields.io/github/stars/HameemDakheel/OTel-jps?style=social)](https://github.com/HameemDakheel/OTel-jps/stargazers)
+[![v1.0.0-alpha.3](https://img.shields.io/badge/version-v1.0.0--alpha.3-blue)](https://github.com/HameemDakheel/OTel-jps/releases)
 
-A complete observability platform featuring **Loki** (Logs), **Grafana** (Dashboards), **Tempo** (Traces), **Mimir** (Metrics), and **Pyroscope** (Profiles), with **MinIO** object storage and **Grafana Alloy** as the unified ingestion gateway.
+> **Production observability for your $20/month VPS.** All 5 signals (logs, metrics, traces, profiles, dashboards). One command. No headache.
 
-## 🏗️ Architecture
+---
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Customer Applications                        │
-│                (OTLP → HTTPS → :443 / :80)                      │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-┌────────────────────────────▼────────────────────────────────────┐
-│                    TIER 4: SSL GATEWAY LAYER                     │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │                        Nginx (SSL)                       │   │
-│  │        • SSL Termination (Let's Encrypt)                 │   │
-│  │        • Routing: /, /minio, /alloy, /v1/*               │   │
-│  └────────────────────────────┬─────────────────────────────┘   │
-└───────────────────────────────┼──────────────────────────────────┘
-                             │
-┌────────────────────────────▼────────────────────────────────────┐
-│                    TIER 3: TELEMETRY LAYER                      │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │                    Grafana Alloy                          │   │
-│  │    • Unified OTLP Ingestion                              │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-┌────────────────────────────▼────────────────────────────────────┐
-│                   TIER 2: BACKEND LAYER                          │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌──────────┐           │
-│  │  Mimir  │  │  Loki   │  │  Tempo  │  │ Pyroscope│           │
-│  │ Metrics │  │  Logs   │  │ Traces  │  │ Profiles │           │
-│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬─────┘           │
-│       └────────────┴────────────┴────────────┘                  │
-│                            │                                     │
-│  ┌─────────────────────────▼─────────────────────────────────┐  │
-│  │                      Grafana UI                            │  │
-│  │         (Unified dashboards with correlations)             │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-┌────────────────────────────▼────────────────────────────────────┐
-│                   TIER 1: STORAGE LAYER                          │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │                        MinIO                                │  │
-│  │              S3-compatible Object Storage                   │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────────────────────┘
-```
-![LGTM Architecture](assets/architecture.png)
+## What is this?
 
-## 🚀 Quick Start
+OTel-jps is an OpenTelemetry-native observability stack you self-host on a single Linux VPS. After one command, you have:
 
-### Option 1: Jelastic One-Click Install
+- **Grafana** with 4 pre-built dashboards already populated with live data
+- **Prometheus** for metrics
+- **VictoriaLogs** for logs (87% less RAM than Loki, 94% lower query latency)
+- **Tempo** for distributed traces
+- **Pyroscope** for continuous profiling
+- **Caddy** with automatic Let's Encrypt TLS
+- 12 pre-tuned alert rules ready to fire
+- cAdvisor for per-container resource metrics
 
-1. Go to your Jelastic Dashboard
-2. Click **Import** → **URL**
-3. Paste: `https://raw.githubusercontent.com/HameemDakheel/OTel-jps/main/manifest.jps`
-4. Click **Install**
-5. Save the credentials from the success popup
-6. **Integration Guide**: See [INTEGRATION.md](INTEGRATION.md) for connecting your DB, LB, and apps.
+**Total idle RAM: ~310 MB.** Fits comfortably on a 4 GB VPS with room for your application.
 
+This is **not** an enterprise stack scaled down. It's an observability stack designed from day one for self-hosters: solo devs, indie SaaS founders, the r/selfhosted crowd. If you don't want to operate a Kubernetes cluster but still want production-grade observability, this is for you.
 
-### Option 2: Local Docker Compose
+---
+
+## Quick install
 
 ```bash
-# Clone the repository
 git clone https://github.com/HameemDakheel/OTel-jps.git
 cd OTel-jps
-
-# Copy and edit environment variables
 cp .env.example .env
-# Edit .env with your preferred passwords
 
-# Start the stack
-docker compose up -d
+# Generate basic-auth hash for OTLP ingestion
+docker run --rm caddy:2-alpine caddy hash-password --plaintext 'YOUR_PASSWORD'
+# (paste output into .env as BASIC_AUTH_HASH)
 
-# Access Grafana at http://localhost:3000
+make simple
+make verify
 ```
 
-## 📡 Connecting Your Applications
+Open `https://localhost/` (or your domain). Login: `admin` / value of `GRAFANA_ADMIN_PASSWORD` in `.env`.
 
-### Environment Variables
+Full walkthrough: **[5-minute Quickstart](docs/quickstart.md)**.
 
-Configure your OpenTelemetry-instrumented application with:
+---
+
+## What you get out of the box
+
+Four pre-built dashboards in Grafana's "OTel-jps" folder, populated with **real data** from second 1 (the stack monitors itself):
+
+- **Stack Health** — every component up/down, OTLP ingestion rates by signal, per-component memory
+- **Container Metrics** — per-container CPU / RAM / network (cAdvisor)
+- **Logs Explorer** — recent logs across the stack and your apps
+- **Traces Browser** — service graph + span duration heatmap
+
+Plus 12 pre-tuned alerts (service down, high error rate, disk full, cert expiring, ingestion drop, cardinality explosion, …) and 4 datasources connected and queryable.
+
+---
+
+## How it compares
+
+| | OTel-jps | SigNoz | OpenObserve | Grafana LGTM (DIY) | Datadog |
+|---|---------|--------|-------------|---------------------|---------|
+| **License** | MIT | Apache 2.0 | AGPL/Apache | AGPL (mixed) | Proprietary |
+| **Idle RAM** | ~310 MB | 4-152 GB | ~300 MB | ~3 GB | n/a |
+| **Fits 4 GB VPS** | ✅ | ❌ (prod docs say 56 CPU / 152 GB) | ✅ | ❌ | n/a |
+| **All 5 signals** | ✅ | ❌ (no profiling) | ❌ (no profiling) | ✅ | ✅ |
+| **One-command install** | ✅ `make simple` | ✅ `docker compose up` | ✅ single binary | ❌ DIY assembly | n/a |
+| **Auto-provisioned dashboards on first run** | ✅ 4 | partial | partial | ❌ | ✅ |
+| **Pre-tuned alert pack** | ✅ 12 | ❌ | ❌ | ❌ | ✅ |
+| **Self-hosted** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Cost predictable** | ✅ ($20 VPS) | ✅ | ✅ | ✅ | ❌ ($1.50-3.50 / GB) |
+
+---
+
+## See it with real microservice traces
+
+Want to see what the stack looks like with a credible microservice workload? Run the [optional OTel demo overlay](demo/README.md):
 
 ```bash
-# Replace <your-env-domain> with your Jelastic environment URL
-export OTEL_EXPORTER_OTLP_ENDPOINT=https://<your-env-domain>/v1/
-export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic <base64_encoded_creds>"
-export OTEL_SERVICE_NAME=my-application
-export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production
+make demo
 ```
 
-### Jelastic Auto-Linker (Recommended)
+This adds 7 services from the [official OpenTelemetry Demo](https://github.com/open-telemetry/opentelemetry-demo) (Astronomy Shop subset) plus a load generator. The Traces Browser dashboard immediately shows the service graph: frontend → cart → checkout → payment → recommendation. Needs ~8 GB RAM total — use a bigger machine for evaluation.
 
-Use the included add-on to automatically inject environment variables:
+---
 
-1. Go to your **Application Environment** in Jelastic
-2. Click **Add-Ons** → **Import**
-3. Paste: `https://raw.githubusercontent.com/YOUR-ORG/jelastic-observability/main/addons/linker.jps`
-4. Enter your Observability environment name
-5. Click **Install** — your app is now connected!
-
-## 📁 Project Structure
+## Architecture sketch
 
 ```
-.
-├── .github/workflows/
-│   └── deploy.yml              # CI/CD for auto-deployment
-├── addons/
-│   └── linker.jps              # App connection add-on
-├── configs/
-│   ├── alloy/
-│   │   └── config.alloy        # Telemetry pipeline
-│   ├── grafana/
-│   │   ├── grafana.ini         # Grafana settings
-│   │   └── provisioning/
-│   │       └── datasources/
-│   │           └── datasources.yml
-│   ├── loki.yaml               # Logs backend
-│   ├── mimir.yaml              # Metrics backend
-│   ├── tempo.yaml              # Traces backend
-│   └── pyroscope.yaml          # Profiling backend
-├── scripts/
-│   └── init_buckets.sh         # MinIO initialization
-├── docker-compose.yml          # Service definitions
-├── manifest.jps                # Jelastic installer
-└── README.md
+Your apps ─→ OTLP gRPC :4317 / HTTP /v1/* ─→ Caddy (TLS + basic auth)
+                                                ↓
+                                       OTel Collector
+                                                ↓
+            ┌────────────┬────────────┬─────────┴──────────┐
+            ▼            ▼            ▼                    ▼
+       Prometheus   VictoriaLogs    Tempo              Pyroscope
+            └────────────┴────────────┴────────────────────┘
+                                   ↓
+                                Grafana ─→ your browser
 ```
 
-## 🔌 Service Ports
+Full detail: **[docs/architecture.md](docs/architecture.md)**.
 
-| Service | Port | Protocol | Purpose |
-|---------|------|----------|---------|
-| Grafana | 3000 | HTTP | Dashboard UI |
-| Mimir | 9009 | HTTP | Prometheus-compatible API |
-| Loki | 3100 | HTTP | Log queries & push |
-| Tempo | 3200 | HTTP | Trace queries |
-| Tempo | 4317 | gRPC | OTLP traces (direct) |
-| Tempo | 4318 | HTTP | OTLP traces (direct) |
-| Pyroscope | 4040 | HTTP | Profiling API |
-| MinIO | 9000 | HTTP | S3 API |
-| MinIO | 9001 | HTTP | Console UI |
-| Alloy | 12345 | HTTP | Pipeline UI |
-| Alloy | 4319 | gRPC | OTLP ingestion (via Alloy) |
-| Alloy | 4320 | HTTP | OTLP ingestion (via Alloy) |
+Why these specific components and not LGTM directly? See:
+- [ADR 0001 — Hybrid stack](docs/decisions/0001-hybrid-stack.md)
+- [ADR 0004 — No MinIO at Simple profile](docs/decisions/0004-no-minio-for-simple.md)
+- [ADR 0005 — Prometheus over Mimir at Simple](docs/decisions/0005-prometheus-not-mimir-for-simple.md)
 
-## 📈 Scaling Guide
+---
 
-| Stage | Trigger | Action |
-|-------|---------|--------|
-| **Vertical** | CPU > 80% or OOM | Increase cloudlets in Jelastic dashboard |
-| **Storage** | Disk full | Add larger volumes or migrate MinIO to dedicated cluster |
-| **Horizontal Ingestion** | Alloy dropping packets | Add Alloy replicas behind load balancer |
-| **Distributed** | Query slowness > 10s | Split to microservices mode |
+## Profiles
 
-## 🔧 Configuration
+OTel-jps ships as one product with four profiles:
 
-### Retention Settings
+| Profile | Target machine | RAM | Retention | HA | Status |
+|---------|----------------|-----|-----------|----|----|
+| **Simple** | Single VPS | 4 GB | 7 days | No | ✅ v1.0 |
+| Standard | Single 8 GB server | 8 GB | 30 days | No | 🔜 v1.1 |
+| Scale | Multi-node | 16 GB+ | 90 days | Yes | 🔜 v2 |
+| Enterprise | Regulated / compliance | sized | 1+ year | Full HA + DR | 🔜 v3 |
 
-Edit the respective config files to adjust retention:
+Full detail: **[docs/profiles.md](docs/profiles.md)**.
 
-- **Metrics (Mimir)**: `configs/mimir.yaml` → `compactor_blocks_retention_period`
-- **Logs (Loki)**: `configs/loki.yaml` → `retention_period`
-- **Traces (Tempo)**: `configs/tempo.yaml` → `block_retention`
+---
 
-Default: **31 days (744h)**
+## Documentation
 
-### Multi-Tenancy
+- **[Quickstart](docs/quickstart.md)** — 5 minutes to populated dashboards
+- **[Architecture](docs/architecture.md)** — what's inside, why
+- **[Profiles](docs/profiles.md)** — Simple → Standard → Scale → Enterprise
+- **[Deploy with Docker Compose](docs/deployment/docker-compose.md)** — full production install
+- **[Instrumentation guides](docs/instrumentation/)** — Node.js, Python, Go, Java, Ruby
+- **[Operations & Runbooks](docs/operations/)** — backup, upgrade, troubleshooting, incident response
+- **[Reference](docs/reference/)** — env vars, ports, volumes, default alerts
+- **[Architecture Decision Records](docs/decisions/)** — why these specific choices
+- **[Demo overlay](demo/README.md)** — real microservice traces in 1 command
 
-To enable multi-tenancy, set in each config:
+Full docs index: **[docs/README.md](docs/README.md)**.
 
-```yaml
-multitenancy_enabled: true
-# or
-auth_enabled: true
-```
+---
 
-Then configure Alloy to inject `X-Scope-OrgID` headers.
+## Contributing
 
-## 🔐 Security Notes
+OTel-jps is MIT-licensed and accepts contributions. Common ways to help:
 
-1. **Change default passwords** in your JPS installation settings.
-2. **Restrict firewall rules** to only allow your application IPs (optional, but recommended).
-3. **Basic Authentication** is enforced by default on ALL ingestion and admin endpoints.
-4. **All traffic** is secured via HTTPS/TLS.
+- File issues for bugs you hit
+- Send PRs for documentation improvements
+- Share custom dashboards via PR (drop a JSON into `configs/grafana/dashboards/`)
+- Suggest alert rules via PR (add to `alerts/`)
 
-## 🐛 Troubleshooting
+For larger contributions, please open an issue first to discuss the approach.
 
-### Check Service Health
+---
 
-```bash
-# Via docker compose
-docker compose ps
-docker compose logs <service-name>
+## License
 
-# Health endpoints
-curl http://localhost:3000/api/health    # Grafana
-curl http://localhost:9009/ready         # Mimir
-curl http://localhost:3100/ready         # Loki
-curl http://localhost:3200/ready         # Tempo
-```
-
-### Common Issues
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Services crashing | Buckets not created | Wait for `minio-init` to complete |
-| No data in Grafana | Wrong OTLP endpoint | Check firewall and port mappings |
-| Ingestion errors | Bucket access denied | Verify MinIO credentials match |
-
-## 📚 Documentation
-
-- [Grafana Documentation](https://grafana.com/docs/)
-- [Mimir Docs](https://grafana.com/docs/mimir/latest/)
-- [Loki Docs](https://grafana.com/docs/loki/latest/)
-- [Tempo Docs](https://grafana.com/docs/tempo/latest/)
-- [Pyroscope Docs](https://grafana.com/docs/pyroscope/latest/)
-- [Alloy Docs](https://grafana.com/docs/alloy/latest/)
-- [Jelastic JPS Reference](https://docs.cloudscripting.com/)
-
-## 📄 License
-
-MIT License — See [LICENSE](LICENSE) for details.
+[MIT](LICENSE) © Hameem Dakheel and contributors. Use it, fork it, modify it, sell it. The only thing we ask: keep the copyright notice.
