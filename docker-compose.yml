@@ -188,6 +188,7 @@ services:
       GF_INSTALL_PLUGINS: victoriametrics-logs-datasource
       GF_FEATURE_TOGGLES_ENABLE: traceToProfiles tracesEmbeddedFlameGraph
       GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL:-https://${DOMAIN:-localhost}/}
+      ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-https://example.invalid/alert}
     expose:
       - "3000"
     healthcheck:
