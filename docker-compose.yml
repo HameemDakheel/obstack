@@ -127,7 +127,9 @@ services:
     restart: unless-stopped
     networks:
       - obs-net
-    command: ["-config.file=/etc/tempo/tempo.yaml"]
+    command:
+      - -config.file=/etc/tempo/tempo.yaml
+      - -config.expand-env=true
     volumes:
       - ./configs/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
       - tempo_data:/var/tempo
@@ -179,7 +181,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-changeme}
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_AUTH_ANONYMOUS_ENABLED: "false"
-      GF_INSTALL_PLUGINS: victoriametrics-logs-datasource,grafana-pyroscope-datasource
+      GF_INSTALL_PLUGINS: victoriametrics-logs-datasource
       GF_FEATURE_TOGGLES_ENABLE: traceToProfiles tracesEmbeddedFlameGraph
       GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL:-https://${DOMAIN:-localhost}/}
     expose:

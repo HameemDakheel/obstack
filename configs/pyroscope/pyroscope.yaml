@@ -1,4 +1,6 @@
 # Pyroscope monolithic config — Simple profile.
+# Retention defaults are managed by the compactor's block-retention setting
+# rather than the deprecated `limits.retention_period` field.
 
 server:
   http_listen_port: 4040
@@ -12,10 +14,13 @@ pyroscopedb:
   data_path: /data/pyroscope-db
 
 limits:
-  retention_period: ${PYROSCOPE_RETENTION_HOURS:-336}h
   max_query_lookback: 720h
   ingestion_rate_mb: 12
   ingestion_burst_size_mb: 24
+
+# NOTE: retention is left at Pyroscope's built-in defaults at v1.
+# Pyroscope 1.10's retention configuration is per-tenant via runtime overrides;
+# Phase 2 (Stack Polish) will wire a proper retention policy.
 
 analytics:
   reporting_enabled: false
