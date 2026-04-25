@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
-## [v1.0.0] — TBD
+## [v1.0.0] — 2026-04-25
 
 The first production release. Combines the work from all alpha milestones (`alpha.1` through `alpha.4`) plus CI/CD and launch readiness from Phase 5.
 
