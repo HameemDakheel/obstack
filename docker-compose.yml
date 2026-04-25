@@ -17,4 +17,28 @@ volumes:
   grafana_data:
 
 # Service blocks are appended below as Tasks 6–12 land.
-services: {}
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: otel-jps-caddy
+    restart: unless-stopped
+    networks:
+      - obs-net
+    ports:
+      - "80:80"
+      - "443:443"
+      - "4317:4317"   # OTLP gRPC
+    volumes:
+      - ./configs/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+      ACME_EMAIL: ${ACME_EMAIL:-admin@example.com}
+      BASIC_AUTH_USER: ${BASIC_AUTH_USER:-ingest}
+      BASIC_AUTH_HASH: ${BASIC_AUTH_HASH}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:2019/config/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5

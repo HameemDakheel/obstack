@@ -2,4 +2,11 @@
 # Targets: solo dev / indie SaaS, single VPS with 4 GB RAM.
 # Apply with: docker compose -f docker-compose.yml -f compose/simple.yml up -d
 
-services: {}
+services:
+  caddy:
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 32M
