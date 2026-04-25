@@ -1,49 +1,98 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# verify_stack.sh — health-check every component in the OTel-jps stack.
+# Usage: ./scripts/verify_stack.sh
+# Exits 0 if all components are healthy, non-zero otherwise.
 
-BASE_DOMAIN="lgtm-obs.tip2.libyanspider.cloud"
-MIMIR_Url="http://$BASE_DOMAIN:9009"
-LOKI_URL="http://$BASE_DOMAIN:3100"
-TEMPO_URL="http://$BASE_DOMAIN:3200"
+set -euo pipefail
 
-echo "=== verifying LGTM+P Stack on $BASE_DOMAIN ==="
+DOMAIN="${DOMAIN:-localhost}"
+SCHEME="${SCHEME:-https}"
+TIMEOUT="${TIMEOUT:-10}"
 
-# 1. Check Metrics (Mimir)
-echo -n "Checking Metrics (Mimir)... "
-# Query for 'up' metric which Alloy scrapes from itself
-METRIC_RESPONSE=$(curl -s "$MIMIR_Url/prometheus/api/v1/query?query=up")
-STATUS=$(echo $METRIC_RESPONSE | jq -r '.status')
-if [ "$STATUS" == "success" ]; then
-    RESULT_COUNT=$(echo $METRIC_RESPONSE | jq '.data.result | length')
-    if [ "$RESULT_COUNT" -gt 0 ]; then
-        echo "✅ OK (Found $RESULT_COUNT active targets)"
-    else
-        echo "⚠️  Connected, but no targets found yet (Alloy might still be scraping)"
-    fi
-else
-    echo "❌ Failed to query Mimir"
-    echo "Response: $METRIC_RESPONSE"
+# Component → (container name, internal endpoint, expected substring or empty for HTTP 200)
+declare -A CHECKS=(
+  ["caddy"]="otel-jps-caddy|http://localhost:2019/config/|"
+  ["otel-collector"]="otel-jps-otelcol|http://localhost:13133/|"
+  ["prometheus"]="otel-jps-prometheus|http://localhost:9090/-/ready|Prometheus is Ready"
+  ["victorialogs"]="otel-jps-victorialogs|http://localhost:9428/health|"
+  ["tempo"]="otel-jps-tempo|http://localhost:3200/ready|ready"
+  ["pyroscope"]="otel-jps-pyroscope|http://localhost:4040/ready|"
+  ["grafana"]="otel-jps-grafana|http://localhost:3000/api/health|database"
+)
+
+PASS=0
+FAIL=0
+RESULTS=()
+
+check_component() {
+  local name="$1"
+  local container="$2"
+  local url="$3"
+  local expected="$4"
+
+  if ! docker inspect --format='{{.State.Status}}' "$container" 2>/dev/null | grep -q running; then
+    RESULTS+=("FAIL $name (container not running)")
+    return 1
+  fi
+
+  local body
+  if ! body="$(docker exec "$container" wget -qO- --timeout="$TIMEOUT" "$url" 2>&1)"; then
+    RESULTS+=("FAIL $name (HTTP request failed: $url)")
+    return 1
+  fi
+
+  if [[ -n "$expected" ]] && ! echo "$body" | grep -q "$expected"; then
+    RESULTS+=("FAIL $name (expected '$expected' in response)")
+    return 1
+  fi
+
+  RESULTS+=("PASS $name")
+  return 0
+}
+
+echo "── OTel-jps stack verification ──────────────────"
+for name in caddy otel-collector prometheus victorialogs tempo pyroscope grafana; do
+  IFS='|' read -r container url expected <<< "${CHECKS[$name]}"
+  if check_component "$name" "$container" "$url" "$expected"; then
+    PASS=$((PASS+1))
+  else
+    FAIL=$((FAIL+1))
+  fi
+done
+
+printf '\n'
+for r in "${RESULTS[@]}"; do
+  echo "  $r"
+done
+
+printf '\n── %d passed, %d failed ─────────────────────────\n' "$PASS" "$FAIL"
+
+if (( FAIL > 0 )); then
+  exit 1
 fi
 
-# 2. Check Logs (Loki)
-echo -n "Checking Logs (Loki)... "
-# Query for logs from Alloy component
-# We need the current time for the query, but let's try a simple 'ready' check or label query first
-# verify Loki is up
-LOKI_READY=$(curl -s "$LOKI_URL/ready")
-if [ "$LOKI_READY" == "ready" ]; then
-     echo "✅ OK (Loki is Ready)"
+# Smoke: send an OTLP HTTP trace request through Caddy
+echo "── OTLP smoke test ──────────────────────────────"
+if [[ "${BASIC_AUTH_USER:-}" && "${BASIC_AUTH_PASSWORD:-}" ]]; then
+  CURL_AUTH=(-u "${BASIC_AUTH_USER}:${BASIC_AUTH_PASSWORD}")
 else
-     echo "❌ Loki is not ready"
+  echo "  (skipping; set BASIC_AUTH_USER and BASIC_AUTH_PASSWORD to test ingestion)"
+  CURL_AUTH=()
 fi
 
-# 3. Check Traces (Tempo)
-echo -n "Checking Traces (Tempo)... "
-TEMPO_READY=$(curl -s "$TEMPO_URL/ready")
-if [ "$TEMPO_READY" == "ready" ]; then
-    echo "✅ OK (Tempo is Ready)"
-else
-    echo "❌ Tempo is not ready"
-    echo "Response: $TEMPO_READY"
+if (( ${#CURL_AUTH[@]} > 0 )); then
+  HTTP_CODE="$(curl -k -sS -o /dev/null -w '%{http_code}' \
+    "${CURL_AUTH[@]}" \
+    -H 'Content-Type: application/json' \
+    -d '{"resourceSpans":[]}' \
+    "${SCHEME}://${DOMAIN}/v1/traces" || true)"
+
+  if [[ "$HTTP_CODE" =~ ^2 ]]; then
+    echo "  PASS OTLP HTTP traces endpoint (HTTP $HTTP_CODE)"
+  else
+    echo "  FAIL OTLP HTTP traces endpoint (HTTP $HTTP_CODE)"
+    exit 1
+  fi
 fi
 
-echo "=== Verification Complete ==="
+echo "✅ All checks passed."
