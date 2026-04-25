@@ -1,0 +1,184 @@
+captainVersion: 4
+version: v1.0.0-alpha.4
+caproverOneClickApp:
+  displayName: OTel-jps
+  isOfficial: false
+  description: >
+    Production observability for your $20/month VPS — all 5 signals (logs, metrics, traces, profiles, dashboards),
+    one click. OpenTelemetry-native: Prometheus + VictoriaLogs + Tempo + Pyroscope + Grafana + OTel Collector.
+    ~310 MB idle. 4 dashboards and 12 alerts pre-loaded.
+  documentation: https://github.com/HameemDakheel/OTel-jps/blob/main/docs/deployment/caprover.md
+
+  instructions:
+    start: |
+      OTel-jps deploys 8 CapRover apps that work together. Total idle RAM is ~310 MB.
+      You'll be prompted for a few env vars. Most have sensible defaults.
+
+      You'll need to generate a bcrypt hash for the OTLP basic-auth password BEFORE running this:
+
+          docker run --rm caddy:2-alpine caddy hash-password --plaintext 'YOUR_PASSWORD'
+
+      Paste the resulting `$2a$14$...` string into the BASIC_AUTH_HASH field below.
+
+    end: |
+      ## Deployment complete
+
+      OTel-jps is now installed as 8 separate CapRover apps:
+      `$$cap_appname-grafana`, `$$cap_appname-otelcol`, `$$cap_appname-prometheus`,
+      `$$cap_appname-victorialogs`, `$$cap_appname-tempo`, `$$cap_appname-pyroscope`,
+      `$$cap_appname-cadvisor`, `$$cap_appname-caddy`.
+
+      ### Open Grafana
+      Visit `https://$$cap_appname-grafana.$$cap_root_domain` (CapRover's auto-issued HTTPS).
+      Login: `admin` / `$$cap_gen_random_hex(16)` *(this random hex is stored as `GRAFANA_ADMIN_PASSWORD`).*
+
+      Or check the CapRover dashboard for the actual generated password.
+
+      ### Send telemetry from your apps
+      OTLP HTTP endpoint: `https://$$cap_appname-caddy.$$cap_root_domain/v1/{traces,metrics,logs}`
+      OTLP gRPC: `$$cap_appname-caddy.$$cap_root_domain:4317`
+
+      Authentication: HTTP Basic auth.
+      - Username: the value of BASIC_AUTH_USER you set above (default `ingest`).
+      - Password: the plaintext you used to generate BASIC_AUTH_HASH.
+
+      Read more: https://github.com/HameemDakheel/OTel-jps/blob/main/docs/quickstart.md
+
+  variables:
+    - id: $$cap_grafana_password
+      label: Grafana admin password
+      defaultValue: $$cap_gen_random_hex(16)
+      description: Auto-generated. You can change this after install via the Grafana UI.
+
+    - id: $$cap_basic_auth_user
+      label: OTLP basic-auth username
+      defaultValue: ingest
+      description: Username your apps will use to authenticate to OTLP ingestion.
+
+    - id: $$cap_basic_auth_hash
+      label: OTLP basic-auth bcrypt hash
+      description: |
+        Generate with: docker run --rm caddy:2-alpine caddy hash-password --plaintext 'YOUR_PASSWORD'
+        Paste the entire $2a$14$... output here.
+      validRegex: /^\$2[ayb]\$.{56}$/
+
+    - id: $$cap_prometheus_retention
+      label: Prometheus metrics retention
+      defaultValue: 7d
+      description: How long metrics are retained. Format - `Nd`, `Nh`.
+
+    - id: $$cap_victorialogs_retention
+      label: VictoriaLogs retention
+      defaultValue: 7d
+      description: How long logs are retained. Format - `Nd`, `Nh`.
+
+    - id: $$cap_tempo_retention_hours
+      label: Tempo trace retention (hours)
+      defaultValue: '72'
+
+    - id: $$cap_pyroscope_retention_hours
+      label: Pyroscope profile retention (hours)
+      defaultValue: '336'
+
+    - id: $$cap_alert_webhook_url
+      label: Alert webhook URL
+      defaultValue: https://example.invalid/alert
+      description: Slack/Discord/PagerDuty webhook. Default is a no-op placeholder.
+
+services:
+  $$cap_appname-prometheus:
+    image: prom/prometheus:v3.0.1
+    notExposeAsWebApp: 'true'
+    persistentDirectories:
+      - $$cap_appname-prometheus-data:/prometheus
+    dockerfileLines:
+      - FROM prom/prometheus:v3.0.1
+      - CMD ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--storage.tsdb.retention.time=$$cap_prometheus_retention", "--web.enable-remote-write-receiver", "--web.listen-address=0.0.0.0:9090"]
+    containerHttpPort: '9090'
+
+  $$cap_appname-victorialogs:
+    image: victoriametrics/victoria-logs:v1.1.0-victorialogs
+    notExposeAsWebApp: 'true'
+    persistentDirectories:
+      - $$cap_appname-victorialogs-data:/vlogs
+    dockerfileLines:
+      - FROM victoriametrics/victoria-logs:v1.1.0-victorialogs
+      - CMD ["--storageDataPath=/vlogs", "--retentionPeriod=$$cap_victorialogs_retention", "--httpListenAddr=0.0.0.0:9428"]
+    containerHttpPort: '9428'
+
+  $$cap_appname-tempo:
+    image: grafana/tempo:2.6.1
+    notExposeAsWebApp: 'true'
+    persistentDirectories:
+      - $$cap_appname-tempo-data:/var/tempo
+    dockerfileLines:
+      - FROM grafana/tempo:2.6.1
+      - CMD ["-config.file=/etc/tempo/tempo.yaml", "-config.expand-env=true"]
+    environment:
+      TEMPO_RETENTION_HOURS: $$cap_tempo_retention_hours
+    containerHttpPort: '3200'
+
+  $$cap_appname-pyroscope:
+    image: grafana/pyroscope:1.10.0
+    notExposeAsWebApp: 'true'
+    persistentDirectories:
+      - $$cap_appname-pyroscope-data:/data
+    dockerfileLines:
+      - FROM grafana/pyroscope:1.10.0
+      - CMD ["-config.file=/etc/pyroscope/pyroscope.yaml"]
+    environment:
+      PYROSCOPE_RETENTION_HOURS: $$cap_pyroscope_retention_hours
+    containerHttpPort: '4040'
+
+  $$cap_appname-otelcol:
+    image: otel/opentelemetry-collector-contrib:0.111.0
+    notExposeAsWebApp: 'true'
+    dockerfileLines:
+      - FROM otel/opentelemetry-collector-contrib:0.111.0
+      - CMD ["--config=/etc/otelcol-contrib/config.yaml"]
+    containerHttpPort: '4318'
+    depends_on:
+      - $$cap_appname-prometheus
+      - $$cap_appname-victorialogs
+      - $$cap_appname-tempo
+      - $$cap_appname-pyroscope
+
+  $$cap_appname-cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    notExposeAsWebApp: 'true'
+    containerHttpPort: '8080'
+
+  $$cap_appname-grafana:
+    image: grafana/grafana:11.3.0
+    notExposeAsWebApp: 'false'
+    persistentDirectories:
+      - $$cap_appname-grafana-data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: $$cap_grafana_password
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_AUTH_ANONYMOUS_ENABLED: 'false'
+      GF_INSTALL_PLUGINS: victoriametrics-logs-datasource
+      GF_FEATURE_TOGGLES_ENABLE: traceToProfiles tracesEmbeddedFlameGraph
+      GF_SERVER_ROOT_URL: https://$$cap_appname-grafana.$$cap_root_domain
+      ALERT_WEBHOOK_URL: $$cap_alert_webhook_url
+    containerHttpPort: '3000'
+    depends_on:
+      - $$cap_appname-prometheus
+      - $$cap_appname-victorialogs
+      - $$cap_appname-tempo
+      - $$cap_appname-pyroscope
+
+  $$cap_appname-caddy:
+    image: caddy:2-alpine
+    notExposeAsWebApp: 'false'
+    persistentDirectories:
+      - $$cap_appname-caddy-data:/data
+      - $$cap_appname-caddy-config:/config
+    environment:
+      BASIC_AUTH_USER: $$cap_basic_auth_user
+      BASIC_AUTH_HASH: $$cap_basic_auth_hash
+    containerHttpPort: '80'
+    depends_on:
+      - $$cap_appname-grafana
+      - $$cap_appname-otelcol

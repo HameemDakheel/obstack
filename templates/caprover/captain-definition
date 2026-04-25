@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 2,
+  "imageName": "alpine:3.19",
+  "documentation": "https://github.com/HameemDakheel/OTel-jps/blob/main/docs/deployment/caprover.md",
+  "comment": "Stub captain-definition. OTel-jps deploys via the One-Click Apps registry pattern (see ./caprover-one-click-app.yml), not as a single CapRover app. This stub exists so the directory is valid for tooling that scans for captain-definition files. To install, follow the One-Click Apps submission flow or paste the YAML manually."
+}
