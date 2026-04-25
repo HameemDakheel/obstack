@@ -1,0 +1,88 @@
+site_name: OTel-jps
+site_description: Production observability for your $20/month VPS — all 5 signals, one command
+site_url: https://otel-jps.dev
+repo_url: https://github.com/HameemDakheel/OTel-jps
+repo_name: HameemDakheel/OTel-jps
+edit_uri: edit/main/docs/
+docs_dir: docs
+exclude_docs: |
+  superpowers/
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: README.md
+  - Get started:
+      - Quickstart: quickstart.md
+      - Architecture: architecture.md
+      - Profiles: profiles.md
+  - Deployment:
+      - Docker Compose: deployment/docker-compose.md
+  - Instrumentation:
+      - Node.js: instrumentation/nodejs.md
+      - Python: instrumentation/python.md
+      - Go: instrumentation/go.md
+      - Java: instrumentation/java.md
+      - Ruby: instrumentation/ruby.md
+  - Operations:
+      - Backup & Restore: operations/backup-restore.md
+      - Upgrade: operations/upgrade.md
+      - Troubleshooting: operations/troubleshooting.md
+      - Runbooks:
+          - Disk full: operations/runbooks/disk-full.md
+          - Service down: operations/runbooks/service-down.md
+          - Cert renewal: operations/runbooks/cert-renewal.md
+          - High cardinality: operations/runbooks/high-cardinality.md
+  - Reference:
+      - Environment variables: reference/env-vars.md
+      - Ports: reference/ports.md
+      - Volumes: reference/volumes.md
+      - Default alerts: reference/default-alerts.md
+      - Default dashboards: reference/default-dashboards.md
+  - Decisions (ADRs):
+      - 0001 Hybrid stack: decisions/0001-hybrid-stack.md
+      - 0002 OTel Collector vs Alloy: decisions/0002-otel-collector-not-alloy.md
+      - 0003 Caddy vs Nginx: decisions/0003-caddy-not-nginx.md
+      - 0004 No MinIO at Simple: decisions/0004-no-minio-for-simple.md
+      - 0005 Prometheus vs Mimir at Simple: decisions/0005-prometheus-not-mimir-for-simple.md
+      - 0006 Self-monitoring vs seeder: decisions/0006-self-monitoring-not-seeder.md
