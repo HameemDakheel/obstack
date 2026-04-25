@@ -1,21 +1,29 @@
-# Environment files with secrets
+# Environment
 .env
-*.env.local
+.env.local
+.env.*.local
+!.env.example
+!.env.test
 
-# Data directories (if running locally)
+# Data and logs
 data/
-*_data/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
+volumes/
 *.log
 logs/
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Temp / cache
+*.tmp
+*.bak
+.cache/
+
+# Build artifacts (none expected at v1, kept for safety)
+dist/
+build/
