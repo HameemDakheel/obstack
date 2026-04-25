@@ -147,7 +147,7 @@ export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic $(echo -n 'ingest:YOUR_PA
 
 ## What's next
 
-- **Want to see realistic microservice traces?** Run `make demo` to spin up the [OTel demo overlay](../demo/README.md). Requires ~8 GB RAM total.
+- **Want to see realistic microservice traces?** Run `make demo` to spin up the [OTel demo overlay](https://github.com/HameemDakheel/OTel-jps/blob/main/demo/README.md). Requires ~8 GB RAM total.
 - **Operating the stack day-to-day?** Read the [Operations](operations/troubleshooting.md) docs.
 - **Want to know why we picked these specific components?** See the [Architecture Decision Records](decisions/0001-hybrid-stack.md).
 - **Need to scale beyond 4 GB?** See [Profiles](profiles.md).

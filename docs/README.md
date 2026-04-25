@@ -2,7 +2,7 @@
 
 Welcome. OTel-jps is production observability for your $20/month VPS — all 5 signals, one command.
 
-If you got here from the repo root, the project [README](../README.md) has the elevator pitch and quick install. This page is the **docs index** — everything else.
+If you got here from the repo root, the project [README](https://github.com/HameemDakheel/OTel-jps#readme) has the elevator pitch and quick install. This page is the **docs index** — everything else.
 
 ---
 
@@ -60,7 +60,7 @@ If you got here from the repo root, the project [README](../README.md) has the e
 
 ## Demo
 
-Want to see what the stack looks like with real microservice traces flowing through it? See the [Demo overlay](../demo/README.md). One command:
+Want to see what the stack looks like with real microservice traces flowing through it? See the [Demo overlay](https://github.com/HameemDakheel/OTel-jps/blob/main/demo/README.md). One command:
 
 ```bash
 make demo

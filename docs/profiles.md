@@ -176,7 +176,7 @@ make demo
 
 The demo overlay is **not** a profile — it doesn't change the stack's resource shape, just adds extra application containers on top. It needs ~4 GB extra RAM, so on a 4 GB Simple-profile VPS you'll OOM. Use a bigger machine for evaluation/demo work.
 
-See the [Demo overlay README](../demo/README.md) for full details.
+See the [Demo overlay README](https://github.com/HameemDakheel/OTel-jps/blob/main/demo/README.md) for full details.
 
 ---
 

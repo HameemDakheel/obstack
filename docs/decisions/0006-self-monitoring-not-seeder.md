@@ -31,7 +31,7 @@ Configuration:
 - **Continuously useful.** Self-monitoring data isn't "demo data" — it's the operational telemetry that makes the Stack Health and Container Metrics dashboards permanently useful.
 
 **Negative:**
-- The data is *only* about the stack itself. Users who want to see what application telemetry looks like need to either instrument an app (per [instrumentation guides](../instrumentation/nodejs.md)) or run `make demo` (the optional [OTel demo overlay](../../demo/README.md)).
+- The data is *only* about the stack itself. Users who want to see what application telemetry looks like need to either instrument an app (per [instrumentation guides](../instrumentation/nodejs.md)) or run `make demo` (the optional [OTel demo overlay](https://github.com/HameemDakheel/OTel-jps/blob/main/demo/README.md)).
 - The first-run dashboards aren't visually "rich" — there's not much variety in the stack's own metrics. Mitigation: the optional OTel demo overlay provides the rich-microservice screenshot path for blog posts and evaluation.
 
 **Neutral:**
@@ -40,5 +40,5 @@ Configuration:
 ## References
 
 - [Phase 2 plan: cAdvisor + dashboards + alerts](../superpowers/plans/2026-04-25-phase-2-stack-polish.md)
-- [Demo overlay README](../../demo/README.md)
+- [Demo overlay README](https://github.com/HameemDakheel/OTel-jps/blob/main/demo/README.md)
 - [Spec §5.6 — Demo strategy](../superpowers/specs/2026-04-25-otel-jps-redesign.md)
