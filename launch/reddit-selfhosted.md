@@ -8,21 +8,21 @@
 
 ## Title
 
-**[Project] OTel-jps — production observability stack for your $20/month VPS, 311 MB idle, all 5 signals**
+**[Project] obstack — production observability stack for your $20/month VPS, 311 MB idle, all 5 signals**
 
 ## Body
 
 Hey r/selfhosted!
 
-I built **OTel-jps** because every self-hosted observability stack I tried either ate 3+ GB of RAM at idle (LGTM) or required 56 CPU and 152 GB RAM in production (SigNoz, per their own docs). Neither fits on the VPS most of us actually run.
+I built **obstack** because every self-hosted observability stack I tried either ate 3+ GB of RAM at idle (LGTM) or required 56 CPU and 152 GB RAM in production (SigNoz, per their own docs). Neither fits on the VPS most of us actually run.
 
-OTel-jps is OpenTelemetry-native and **idles at ~311 MB** total across 8 containers. Everything is auto-provisioned — you `git clone`, `make simple`, open Grafana, and you immediately see 4 dashboards populated with live data (the stack monitors itself).
+obstack is OpenTelemetry-native and **idles at ~311 MB** total across 8 containers. Everything is auto-provisioned — you `git clone`, `make simple`, open Grafana, and you immediately see 4 dashboards populated with live data (the stack monitors itself).
 
 ### What's inside
 - **Caddy** — auto-TLS via Let's Encrypt, basic auth on OTLP ingestion.
 - **OpenTelemetry Collector** (upstream contrib) — receives your OTLP, fans out to backends.
 - **Prometheus** for metrics, **VictoriaLogs** for logs (~87% less RAM than Loki), **Tempo** for traces, **Pyroscope** for continuous profiling.
-- **Grafana** with 4 pre-built dashboards in the OTel-jps folder + 12 pre-tuned alerts already loaded.
+- **Grafana** with 4 pre-built dashboards in the obstack folder + 12 pre-tuned alerts already loaded.
 - **cAdvisor** for per-container CPU/RAM/network metrics.
 
 ### Why I think it's interesting for self-hosters
@@ -32,9 +32,9 @@ OTel-jps is OpenTelemetry-native and **idles at ~311 MB** total across 8 contain
 - **MIT-licensed** — fork it, modify it, sell it. No surprise rug-pull.
 
 ### Repository
-https://github.com/HameemDakheel/OTel-jps
+https://github.com/HameemDakheel/obstack
 
-5-minute quickstart: https://github.com/HameemDakheel/OTel-jps/blob/main/docs/quickstart.md
+5-minute quickstart: https://github.com/HameemDakheel/obstack/blob/main/docs/quickstart.md
 
 ### Screenshots
 
@@ -57,8 +57,8 @@ Honest list:
 If you have a Hetzner CPX21 (4 GB / 2 vCPU / 80 GB SSD, ~$8.50/mo) or DigitalOcean basic droplet, this works comfortably:
 
 ```bash
-git clone https://github.com/HameemDakheel/OTel-jps.git
-cd OTel-jps
+git clone https://github.com/HameemDakheel/obstack.git
+cd obstack
 cp .env.example .env
 # Generate basic-auth hash (one line)
 docker run --rm caddy:2-alpine caddy hash-password --plaintext 'YOUR_PASSWORD'

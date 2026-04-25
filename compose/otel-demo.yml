@@ -17,7 +17,7 @@ x-otel-env: &otel-env
 services:
   demo-frontend:
     image: ghcr.io/open-telemetry/demo:1.12.0-frontend
-    container_name: otel-jps-demo-frontend
+    container_name: obstack-demo-frontend
     restart: unless-stopped
     networks: [obs-net]
     environment:
@@ -33,7 +33,7 @@ services:
 
   demo-cart:
     image: ghcr.io/open-telemetry/demo:1.12.0-cart
-    container_name: otel-jps-demo-cart
+    container_name: obstack-demo-cart
     restart: unless-stopped
     networks: [obs-net]
     environment:
@@ -45,13 +45,13 @@ services:
 
   demo-valkey:
     image: valkey/valkey:7.2-alpine
-    container_name: otel-jps-demo-valkey
+    container_name: obstack-demo-valkey
     restart: unless-stopped
     networks: [obs-net]
 
   demo-checkout:
     image: ghcr.io/open-telemetry/demo:1.12.0-checkout
-    container_name: otel-jps-demo-checkout
+    container_name: obstack-demo-checkout
     restart: unless-stopped
     networks: [obs-net]
     environment:
@@ -63,7 +63,7 @@ services:
 
   demo-payment:
     image: ghcr.io/open-telemetry/demo:1.12.0-payment
-    container_name: otel-jps-demo-payment
+    container_name: obstack-demo-payment
     restart: unless-stopped
     networks: [obs-net]
     environment:
@@ -73,7 +73,7 @@ services:
 
   demo-recommendation:
     image: ghcr.io/open-telemetry/demo:1.12.0-recommendation
-    container_name: otel-jps-demo-recommendation
+    container_name: obstack-demo-recommendation
     restart: unless-stopped
     networks: [obs-net]
     environment:
@@ -83,7 +83,7 @@ services:
 
   demo-load-generator:
     image: ghcr.io/open-telemetry/demo:1.12.0-loadgenerator
-    container_name: otel-jps-demo-loadgen
+    container_name: obstack-demo-loadgen
     restart: unless-stopped
     networks: [obs-net]
     environment:

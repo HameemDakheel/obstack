@@ -3,7 +3,7 @@
 > **What you'll need:** an account on a Jelastic-based PaaS (mirohost, Layershift, Hostinger Cloud, OVH Jelastic, etc.).
 > **Time to complete:** ~5 minutes — Jelastic has the most automated install of any PaaS we support.
 
-[Jelastic](https://jelastic.com) is a turnkey PaaS sold by hosting providers. Its JPS (Jelastic Packaging Standard) format lets the entire OTel-jps install be expressed as a single manifest the Jelastic dashboard reads and executes.
+[Jelastic](https://jelastic.com) is a turnkey PaaS sold by hosting providers. Its JPS (Jelastic Packaging Standard) format lets the entire obstack install be expressed as a single manifest the Jelastic dashboard reads and executes.
 
 ---
 
@@ -23,7 +23,7 @@ That's it. Jelastic provisions Docker, the domain, the SSL cert, and the storage
 2. Choose **URL** and paste:
 
    ```
-   https://raw.githubusercontent.com/HameemDakheel/OTel-jps/main/templates/jelastic/manifest.jps
+   https://raw.githubusercontent.com/HameemDakheel/obstack/main/templates/jelastic/manifest.jps
    ```
 
    *(Or upload `templates/jelastic/manifest.jps` from a local clone of the repo.)*
@@ -38,9 +38,9 @@ Fill the prompted fields:
 
 | Field | Default | What it does |
 |-------|---------|-------------|
-| Git repository URL | `https://github.com/HameemDakheel/OTel-jps.git` | Where to clone OTel-jps from |
+| Git repository URL | `https://github.com/HameemDakheel/obstack.git` | Where to clone obstack from |
 | Git tag or branch | `v1.0.0-alpha.4` | Version to deploy. Use `main` for bleeding edge. |
-| Environment name | `otel-jps` | Jelastic environment name (becomes part of the auto-issued domain) |
+| Environment name | `obstack` | Jelastic environment name (becomes part of the auto-issued domain) |
 | Alert webhook URL | `https://example.invalid/alert` | Optional Slack/Discord webhook |
 
 Jelastic auto-generates:
@@ -67,7 +67,7 @@ The same info is emailed to your Jelastic account.
 
 ## Step 5 — Verify
 
-Open the Grafana URL. Login with the credentials shown. Confirm you see 4 pre-built dashboards in the OTel-jps folder.
+Open the Grafana URL. Login with the credentials shown. Confirm you see 4 pre-built dashboards in the obstack folder.
 
 If you want to trigger the same verify-stack script as the local install:
 
@@ -86,13 +86,13 @@ If you have other Jelastic environments (Node app, Spring Boot service, Django a
 3. Paste:
 
    ```
-   https://raw.githubusercontent.com/HameemDakheel/OTel-jps/main/templates/jelastic/linker.jps
+   https://raw.githubusercontent.com/HameemDakheel/obstack/main/templates/jelastic/linker.jps
    ```
 
 4. Configure:
-   - OTel-jps environment name (e.g. `otel-jps`)
-   - OTel-jps public domain (the one Jelastic issued)
-   - Basic-auth username and **plaintext** password (the one shown on the OTel-jps install success screen)
+   - obstack environment name (e.g. `obstack`)
+   - obstack public domain (the one Jelastic issued)
+   - Basic-auth username and **plaintext** password (the one shown on the obstack install success screen)
    - Service name (defaults to your environment name)
    - Sampling ratio (default `1.0` = sample everything)
 
@@ -129,5 +129,5 @@ The manifest exposes these as Jelastic actions (run from the Add-Ons menu):
 
 - [Quickstart](../quickstart.md)
 - [Architecture](../architecture.md)
-- [Jelastic template README](https://github.com/HameemDakheel/OTel-jps/blob/main/templates/jelastic/README.md)
+- [Jelastic template README](https://github.com/HameemDakheel/obstack/blob/main/templates/jelastic/README.md)
 - [Jelastic JPS documentation](https://docs.jelastic.com/manifest-overview/)

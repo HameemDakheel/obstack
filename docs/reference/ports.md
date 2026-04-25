@@ -1,6 +1,6 @@
 # Ports
 
-> Source of truth: [`docker-compose.yml`](https://github.com/HameemDakheel/OTel-jps/blob/main/docker-compose.yml)
+> Source of truth: [`docker-compose.yml`](https://github.com/HameemDakheel/obstack/blob/main/docker-compose.yml)
 
 ---
 
@@ -10,9 +10,9 @@ These ports are bound to the host and reachable from outside Docker.
 
 | Port | Container | Purpose | Auth |
 |------|-----------|---------|------|
-| `80` | `otel-jps-caddy` | HTTP — redirects to HTTPS, ACME challenge | none (redirect/challenge) |
-| `443` | `otel-jps-caddy` | HTTPS — Grafana UI, OTLP HTTP ingestion | Grafana login (UI) / Caddy basic auth (`/v1/*`) |
-| `4317` | `otel-jps-caddy` (proxies to OTel Collector) | OTLP gRPC ingestion | TLS + (auth via gRPC metadata header — caller responsibility) |
+| `80` | `obstack-caddy` | HTTP — redirects to HTTPS, ACME challenge | none (redirect/challenge) |
+| `443` | `obstack-caddy` | HTTPS — Grafana UI, OTLP HTTP ingestion | Grafana login (UI) / Caddy basic auth (`/v1/*`) |
+| `4317` | `obstack-caddy` (proxies to OTel Collector) | OTLP gRPC ingestion | TLS + (auth via gRPC metadata header — caller responsibility) |
 
 ---
 
@@ -22,19 +22,19 @@ These ports are reachable **only** from other containers in `obs-net`. They are 
 
 | Port | Container | Endpoint | Purpose |
 |------|-----------|----------|---------|
-| `2019` | `otel-jps-caddy` | `/config/`, `/load`, etc. | Caddy admin API (localhost-only) |
-| `4318` | `otel-jps-otelcol` | `/v1/traces`, `/v1/metrics`, `/v1/logs` | OTLP HTTP receiver (Caddy proxies to here) |
-| `4317` | `otel-jps-otelcol` | (gRPC) | OTLP gRPC receiver (Caddy proxies to here) |
-| `8888` | `otel-jps-otelcol` | `/metrics` | Self-metrics (Prometheus scrapes this) |
-| `13133` | `otel-jps-otelcol` | `/` | health_check extension |
-| `9090` | `otel-jps-prometheus` | `/-/ready`, `/api/v1/*`, `/metrics` | Prometheus HTTP API + UI |
-| `9428` | `otel-jps-victorialogs` | `/health`, `/insert/opentelemetry`, `/select/logsql/*` | VictoriaLogs API |
-| `3200` | `otel-jps-tempo` | `/ready`, `/api/*` | Tempo HTTP query API |
-| `4318` | `otel-jps-tempo` | `/v1/traces` | Tempo OTLP HTTP receiver (Collector pushes here) |
-| `9095` | `otel-jps-tempo` | (gRPC) | Tempo native gRPC |
-| `4040` | `otel-jps-pyroscope` | `/`, `/ready`, `/ingest`, `/api/*` | Pyroscope HTTP API |
-| `3000` | `otel-jps-grafana` | `/`, `/api/*`, `/login` | Grafana UI (Caddy proxies `/` to here) |
-| `8080` | `otel-jps-cadvisor` | `/metrics`, `/api/*` | cAdvisor (Prometheus scrapes this) |
+| `2019` | `obstack-caddy` | `/config/`, `/load`, etc. | Caddy admin API (localhost-only) |
+| `4318` | `obstack-otelcol` | `/v1/traces`, `/v1/metrics`, `/v1/logs` | OTLP HTTP receiver (Caddy proxies to here) |
+| `4317` | `obstack-otelcol` | (gRPC) | OTLP gRPC receiver (Caddy proxies to here) |
+| `8888` | `obstack-otelcol` | `/metrics` | Self-metrics (Prometheus scrapes this) |
+| `13133` | `obstack-otelcol` | `/` | health_check extension |
+| `9090` | `obstack-prometheus` | `/-/ready`, `/api/v1/*`, `/metrics` | Prometheus HTTP API + UI |
+| `9428` | `obstack-victorialogs` | `/health`, `/insert/opentelemetry`, `/select/logsql/*` | VictoriaLogs API |
+| `3200` | `obstack-tempo` | `/ready`, `/api/*` | Tempo HTTP query API |
+| `4318` | `obstack-tempo` | `/v1/traces` | Tempo OTLP HTTP receiver (Collector pushes here) |
+| `9095` | `obstack-tempo` | (gRPC) | Tempo native gRPC |
+| `4040` | `obstack-pyroscope` | `/`, `/ready`, `/ingest`, `/api/*` | Pyroscope HTTP API |
+| `3000` | `obstack-grafana` | `/`, `/api/*`, `/login` | Grafana UI (Caddy proxies `/` to here) |
+| `8080` | `obstack-cadvisor` | `/metrics`, `/api/*` | cAdvisor (Prometheus scrapes this) |
 
 ---
 
@@ -44,7 +44,7 @@ When `make demo` is active, these ports are also bound:
 
 | Port | Container | Purpose |
 |------|-----------|---------|
-| `8082` | `otel-jps-demo-frontend` | Astronomy Shop frontend UI |
+| `8082` | `obstack-demo-frontend` | Astronomy Shop frontend UI |
 
 The other demo services (cart, checkout, payment, recommendation, valkey, loadgen) are internal-only.
 
@@ -68,4 +68,4 @@ Block everything else, including Docker-internal ports — they should never be 
 ## See also
 
 - [Architecture](../architecture.md) — data flow diagram
-- [Caddyfile](https://github.com/HameemDakheel/OTel-jps/blob/main/configs/caddy/Caddyfile) — reverse-proxy routes
+- [Caddyfile](https://github.com/HameemDakheel/obstack/blob/main/configs/caddy/Caddyfile) — reverse-proxy routes

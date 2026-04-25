@@ -4,7 +4,7 @@
 
 ## Why this directory has a README and no images yet
 
-OTel-jps v1.0.0 ships before screenshots are captured. Reasons:
+obstack v1.0.0 ships before screenshots are captured. Reasons:
 
 - Good screenshots need 30+ minutes of accumulated data so dashboards aren't empty.
 - Lighting (light vs dark mode), viewport size, and crop framing all matter — easier to redo manually than automate poorly.
@@ -26,7 +26,7 @@ Each screenshot below should be:
 | Filename | Subject | When to capture |
 |----------|---------|-----------------|
 | `01-grafana-login.png` | Grafana login page (just the form) | Immediately after `make simple` |
-| `02-otel-jps-folder.png` | Grafana sidebar showing OTel-jps folder expanded with the 4 dashboards | After 1 minute of stack running |
+| `02-obstack-folder.png` | Grafana sidebar showing obstack folder expanded with the 4 dashboards | After 1 minute of stack running |
 | `03-stack-health.png` | Stack Health dashboard, all panels populated | After 30 minutes of self-monitoring data |
 | `04-container-metrics.png` | Container Metrics dashboard, CPU/RAM panels showing real time-series | After 30 minutes |
 | `05-logs-explorer.png` | Logs Explorer dashboard with VictoriaLogs query showing real recent logs | After 30 minutes |

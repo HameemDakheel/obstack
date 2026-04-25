@@ -1,17 +1,17 @@
 captainVersion: 4
 version: v1.0.0-alpha.4
 caproverOneClickApp:
-  displayName: OTel-jps
+  displayName: obstack
   isOfficial: false
   description: >
     Production observability for your $20/month VPS — all 5 signals (logs, metrics, traces, profiles, dashboards),
     one click. OpenTelemetry-native: Prometheus + VictoriaLogs + Tempo + Pyroscope + Grafana + OTel Collector.
     ~310 MB idle. 4 dashboards and 12 alerts pre-loaded.
-  documentation: https://github.com/HameemDakheel/OTel-jps/blob/main/docs/deployment/caprover.md
+  documentation: https://github.com/HameemDakheel/obstack/blob/main/docs/deployment/caprover.md
 
   instructions:
     start: |
-      OTel-jps deploys 8 CapRover apps that work together. Total idle RAM is ~310 MB.
+      obstack deploys 8 CapRover apps that work together. Total idle RAM is ~310 MB.
       You'll be prompted for a few env vars. Most have sensible defaults.
 
       You'll need to generate a bcrypt hash for the OTLP basic-auth password BEFORE running this:
@@ -23,7 +23,7 @@ caproverOneClickApp:
     end: |
       ## Deployment complete
 
-      OTel-jps is now installed as 8 separate CapRover apps:
+      obstack is now installed as 8 separate CapRover apps:
       `$$cap_appname-grafana`, `$$cap_appname-otelcol`, `$$cap_appname-prometheus`,
       `$$cap_appname-victorialogs`, `$$cap_appname-tempo`, `$$cap_appname-pyroscope`,
       `$$cap_appname-cadvisor`, `$$cap_appname-caddy`.
@@ -42,7 +42,7 @@ caproverOneClickApp:
       - Username: the value of BASIC_AUTH_USER you set above (default `ingest`).
       - Password: the plaintext you used to generate BASIC_AUTH_HASH.
 
-      Read more: https://github.com/HameemDakheel/OTel-jps/blob/main/docs/quickstart.md
+      Read more: https://github.com/HameemDakheel/obstack/blob/main/docs/quickstart.md
 
   variables:
     - id: $$cap_grafana_password

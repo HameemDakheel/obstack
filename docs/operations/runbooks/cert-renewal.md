@@ -10,7 +10,7 @@ Caddy auto-renews Let's Encrypt certificates ~30 days before expiry. The vast ma
 
 - Browsers warn about an expired certificate.
 - `openssl s_client -connect <DOMAIN>:443 -servername <DOMAIN> 2>/dev/null | openssl x509 -noout -dates` shows past `notAfter`.
-- Caddy logs (`docker logs otel-jps-caddy`) show `failed to renew certificate` or `certificate has expired`.
+- Caddy logs (`docker logs obstack-caddy`) show `failed to renew certificate` or `certificate has expired`.
 
 ## Root causes
 
@@ -24,14 +24,14 @@ Caddy auto-renews Let's Encrypt certificates ~30 days before expiry. The vast ma
 
 ```bash
 # Current cert status (Caddy admin API)
-docker exec otel-jps-caddy curl -s http://localhost:2019/config/ | grep -A 5 issuers
+docker exec obstack-caddy curl -s http://localhost:2019/config/ | grep -A 5 issuers
 
 # Expiry date as seen by the world
 echo | openssl s_client -connect <DOMAIN>:443 -servername <DOMAIN> 2>/dev/null \
   | openssl x509 -noout -dates
 
 # Caddy renewal logs
-docker logs otel-jps-caddy 2>&1 | grep -iE 'renew|certificate|acme'
+docker logs obstack-caddy 2>&1 | grep -iE 'renew|certificate|acme'
 
 # Is port 80 reachable?
 curl -I http://<DOMAIN>/ 2>&1 | head -3
@@ -42,7 +42,7 @@ curl -I http://<DOMAIN>/ 2>&1 | head -3
 ### Trigger an immediate renewal attempt
 
 ```bash
-docker exec otel-jps-caddy caddy reload --config /etc/caddy/Caddyfile
+docker exec obstack-caddy caddy reload --config /etc/caddy/Caddyfile
 ```
 
 Wait ~1 minute, check logs for `obtained certificate` messages.
@@ -72,7 +72,7 @@ If DNS is wrong, fix it at your DNS provider, wait for propagation (TTL), then t
 
 ```bash
 make stop
-docker volume rm otel-jps_caddy_data
+docker volume rm obstack_caddy_data
 make simple
 ```
 

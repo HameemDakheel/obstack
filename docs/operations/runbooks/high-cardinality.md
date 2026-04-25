@@ -23,15 +23,15 @@
 
 ```bash
 # How many head series?
-docker exec otel-jps-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=prometheus_tsdb_head_series' \
+docker exec obstack-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=prometheus_tsdb_head_series' \
   | python3 -c "import json,sys; d=json.load(sys.stdin); print('series:', d['data']['result'][0]['value'][1] if d['data']['result'] else 'none')"
 
 # Which metric names have the most series?
-docker exec otel-jps-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=topk(10,count(count(group by(__name__){__name__!=""})by(__name__)))' \
+docker exec obstack-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=topk(10,count(count(group by(__name__){__name__!=""})by(__name__)))' \
   | python3 -m json.tool | head -50
 
 # Which labels on a specific metric?
-docker exec otel-jps-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=count(group by(<offending_label>) (<metric_name>))'
+docker exec obstack-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=count(group by(<offending_label>) (<metric_name>))'
 ```
 
 The Prometheus UI has a built-in cardinality explorer at `/api/v1/status/tsdb` (also via Grafana → Explore → datasource:Prometheus → Status menu).
@@ -88,7 +88,7 @@ If you can't wait for retention to drop the old series, restart Prometheus with 
 
 ```bash
 docker compose -f docker-compose.yml -f compose/simple.yml stop prometheus
-docker volume rm otel-jps_prometheus_data
+docker volume rm obstack_prometheus_data
 docker compose -f docker-compose.yml -f compose/simple.yml up -d prometheus
 ```
 
@@ -105,7 +105,7 @@ The OTel Collector workaround is a stopgap. Long-term: stop emitting the noisy l
 ## Verify recovery
 
 ```bash
-docker exec otel-jps-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=prometheus_tsdb_head_series'
+docker exec obstack-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=prometheus_tsdb_head_series'
 ```
 
 After the OTel Collector workaround takes effect plus the retention window, head series should drop and stay below 1M.

@@ -1,8 +1,8 @@
 # Volumes
 
-> Source of truth: [`docker-compose.yml`](https://github.com/HameemDakheel/OTel-jps/blob/main/docker-compose.yml) `volumes:` section.
+> Source of truth: [`docker-compose.yml`](https://github.com/HameemDakheel/obstack/blob/main/docker-compose.yml) `volumes:` section.
 
-OTel-jps uses **named Docker volumes** for all persistent data. No host bind-mounts for data (only for read-only configs).
+obstack uses **named Docker volumes** for all persistent data. No host bind-mounts for data (only for read-only configs).
 
 ---
 
@@ -10,13 +10,13 @@ OTel-jps uses **named Docker volumes** for all persistent data. No host bind-mou
 
 | Volume | Container | Mounted at | Backend | Retention impact |
 |--------|-----------|------------|---------|------------------|
-| `prometheus_data` | `otel-jps-prometheus` | `/prometheus` | TSDB | Holds all metric blocks; sized by `PROMETHEUS_RETENTION` |
-| `victorialogs_data` | `otel-jps-victorialogs` | `/vlogs` | VictoriaLogs storage | Holds all log data; sized by `VICTORIALOGS_RETENTION` |
-| `tempo_data` | `otel-jps-tempo` | `/var/tempo` | Trace blocks + WAL | Sized by `TEMPO_RETENTION_HOURS` |
-| `pyroscope_data` | `otel-jps-pyroscope` | `/data` | Profile DB + filesystem store | Pyroscope retention default (built-in) |
-| `grafana_data` | `otel-jps-grafana` | `/var/lib/grafana` | SQLite DB + plugins + sessions | Grows with custom dashboards / plugin installs |
-| `caddy_data` | `otel-jps-caddy` | `/data` | Let's Encrypt certs + ACME state | Tiny (a few MB); critical for cert renewal |
-| `caddy_config` | `otel-jps-caddy` | `/config` | Caddy config cache | Tiny |
+| `prometheus_data` | `obstack-prometheus` | `/prometheus` | TSDB | Holds all metric blocks; sized by `PROMETHEUS_RETENTION` |
+| `victorialogs_data` | `obstack-victorialogs` | `/vlogs` | VictoriaLogs storage | Holds all log data; sized by `VICTORIALOGS_RETENTION` |
+| `tempo_data` | `obstack-tempo` | `/var/tempo` | Trace blocks + WAL | Sized by `TEMPO_RETENTION_HOURS` |
+| `pyroscope_data` | `obstack-pyroscope` | `/data` | Profile DB + filesystem store | Pyroscope retention default (built-in) |
+| `grafana_data` | `obstack-grafana` | `/var/lib/grafana` | SQLite DB + plugins + sessions | Grows with custom dashboards / plugin installs |
+| `caddy_data` | `obstack-caddy` | `/data` | Let's Encrypt certs + ACME state | Tiny (a few MB); critical for cert renewal |
+| `caddy_config` | `obstack-caddy` | `/config` | Caddy config cache | Tiny |
 
 ---
 
@@ -49,7 +49,7 @@ cAdvisor needs broad host access to read container metrics:
 | `/var/lib/docker` | `/var/lib/docker` | ro |
 | `/dev/disk` | `/dev/disk` | ro |
 
-`cadvisor` runs `privileged: true` for kernel namespace access. This is standard for cAdvisor and is the only `privileged` container in OTel-jps.
+`cadvisor` runs `privileged: true` for kernel namespace access. This is standard for cAdvisor and is the only `privileged` container in obstack.
 
 ---
 

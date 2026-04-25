@@ -1,6 +1,6 @@
 # Environment variables
 
-> Source of truth: [`.env.example`](https://github.com/HameemDakheel/OTel-jps/blob/main/.env.example)
+> Source of truth: [`.env.example`](https://github.com/HameemDakheel/obstack/blob/main/.env.example)
 
 All variables shown with their Simple-profile defaults. Override by editing `.env` (which is git-ignored).
 
@@ -66,4 +66,4 @@ All variables shown with their Simple-profile defaults. Override by editing `.en
 ## See also
 
 - [Quickstart](../quickstart.md) — minimum env you need to set
-- [`.env.example`](https://github.com/HameemDakheel/OTel-jps/blob/main/.env.example) — authoritative source
+- [`.env.example`](https://github.com/HameemDakheel/obstack/blob/main/.env.example) — authoritative source

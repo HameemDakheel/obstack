@@ -1,8 +1,8 @@
 # Upgrade
 
-> **Audience:** anyone planning to bump OTel-jps to a new release. Read after [Backup & Restore](backup-restore.md).
+> **Audience:** anyone planning to bump obstack to a new release. Read after [Backup & Restore](backup-restore.md).
 
-OTel-jps pins every Docker image to an exact tag. Upgrading happens in **deliberate steps**, not via `:latest`.
+obstack pins every Docker image to an exact tag. Upgrading happens in **deliberate steps**, not via `:latest`.
 
 ---
 
@@ -21,7 +21,7 @@ image: grafana/grafana:11.3.0
 image: gcr.io/cadvisor/cadvisor:v0.49.1
 ```
 
-When OTel-jps bumps a version, the change is **always** in a release with a `CHANGELOG.md` entry explaining what changed and why.
+When obstack bumps a version, the change is **always** in a release with a `CHANGELOG.md` entry explaining what changed and why.
 
 ---
 
@@ -92,15 +92,15 @@ If a schema migration *was* applied (e.g. a new Grafana version migrated the SQL
 
 ## Breaking-change protocol
 
-When OTel-jps ships a release that requires manual intervention, the release notes follow this format:
+When obstack ships a release that requires manual intervention, the release notes follow this format:
 
 ```
 ## v1.2.0 — 2026-XX-XX
 
 ### Breaking changes
 - VictoriaLogs storage path changed from `/vlogs` to `/victorialogs/data`. To upgrade,
-  stop the stack, rename `/var/lib/docker/volumes/otel-jps_victorialogs_data/_data/vlogs`
-  to `/var/lib/docker/volumes/otel-jps_victorialogs_data/_data/victorialogs/data`, then
+  stop the stack, rename `/var/lib/docker/volumes/obstack_victorialogs_data/_data/vlogs`
+  to `/var/lib/docker/volumes/obstack_victorialogs_data/_data/victorialogs/data`, then
   `make simple`. No data loss.
 
 ### Other changes

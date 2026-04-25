@@ -9,7 +9,7 @@ This guide gets a complete observability stack running on a fresh Linux VPS in 5
 
 ## What you're about to install
 
-OTel-jps is a single-VPS observability stack. After this quickstart you'll have running:
+obstack is a single-VPS observability stack. After this quickstart you'll have running:
 
 - **Caddy** — TLS termination, basic auth on ingestion, reverse proxy
 - **OpenTelemetry Collector** — receives OTLP, fans out to backends
@@ -27,8 +27,8 @@ Total idle RAM: ~310 MB (verified on Phase 2). Comfortable on a 4 GB VPS with ro
 ## Step 1 — Clone the repo
 
 ```bash
-git clone https://github.com/HameemDakheel/OTel-jps.git
-cd OTel-jps
+git clone https://github.com/HameemDakheel/obstack.git
+cd obstack
 cp .env.example .env
 ```
 
@@ -79,7 +79,7 @@ make verify
 Expected output:
 
 ```
-── OTel-jps stack verification ──────────────────
+── obstack stack verification ──────────────────
   PASS caddy (probe container running)
   PASS otel-collector
   PASS prometheus
@@ -104,7 +104,7 @@ Login:
 - **Username:** `admin`
 - **Password:** the value of `GRAFANA_ADMIN_PASSWORD` in `.env`
 
-In the left sidebar, click **Dashboards** → **OTel-jps**. You'll see four pre-built dashboards already populated with **real data** — the stack monitoring itself:
+In the left sidebar, click **Dashboards** → **obstack**. You'll see four pre-built dashboards already populated with **real data** — the stack monitoring itself:
 
 1. **Stack Health** — component up/down, ingestion rates, memory per component
 2. **Container Metrics** — per-container CPU/RAM/network (cAdvisor)
@@ -147,7 +147,7 @@ export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic $(echo -n 'ingest:YOUR_PA
 
 ## What's next
 
-- **Want to see realistic microservice traces?** Run `make demo` to spin up the [OTel demo overlay](https://github.com/HameemDakheel/OTel-jps/blob/main/demo/README.md). Requires ~8 GB RAM total.
+- **Want to see realistic microservice traces?** Run `make demo` to spin up the [OTel demo overlay](https://github.com/HameemDakheel/obstack/blob/main/demo/README.md). Requires ~8 GB RAM total.
 - **Operating the stack day-to-day?** Read the [Operations](operations/troubleshooting.md) docs.
 - **Want to know why we picked these specific components?** See the [Architecture Decision Records](decisions/0001-hybrid-stack.md).
 - **Need to scale beyond 4 GB?** See [Profiles](profiles.md).
@@ -169,7 +169,7 @@ make clean               # stops the stack AND deletes all telemetry data (inter
 
 | Symptom | Likely cause | Fix |
 |---------|-------------|-----|
-| `make verify` reports a service down | Container crashed during startup | `docker logs otel-jps-<name>` to see why |
+| `make verify` reports a service down | Container crashed during startup | `docker logs obstack-<name>` to see why |
 | Browser warns about untrusted cert | Using `DOMAIN=localhost` (self-signed) | Accept the cert for dev; use a real domain in prod |
 | Grafana login fails | Password mismatch in `.env` | Check `GRAFANA_ADMIN_PASSWORD`, restart Grafana |
 | OTLP requests get 401 | Basic auth header wrong | Re-encode `username:password` as base64; ensure `Authorization: Basic <base64>` header |

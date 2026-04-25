@@ -1,14 +1,14 @@
-# OTel-jps Demo Overlay
+# obstack Demo Overlay
 
 This directory documents the optional OTel Demo overlay — a way to spin up
 a small subset of the official [open-telemetry/opentelemetry-demo](https://github.com/open-telemetry/opentelemetry-demo)
-"Astronomy Shop" services, rewired to send telemetry to your local OTel-jps stack.
+"Astronomy Shop" services, rewired to send telemetry to your local obstack stack.
 
 ## When to use it
 
-- You want to **see what real microservice traces look like** in OTel-jps.
+- You want to **see what real microservice traces look like** in obstack.
 - You want **screenshots / blog content / talk demos** with realistic data.
-- You're **evaluating** OTel-jps before deploying for real workloads.
+- You're **evaluating** obstack before deploying for real workloads.
 
 ## When NOT to use it
 

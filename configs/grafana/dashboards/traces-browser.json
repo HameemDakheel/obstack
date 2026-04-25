@@ -1,7 +1,7 @@
 {
-  "title": "OTel-jps · Traces Browser",
-  "uid": "otel-jps-traces-browser",
-  "tags": ["otel-jps", "traces"],
+  "title": "obstack · Traces Browser",
+  "uid": "obstack-traces-browser",
+  "tags": ["obstack", "traces"],
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 1,

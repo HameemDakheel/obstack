@@ -1,5 +1,5 @@
 groups:
-  - name: otel-jps-default
+  - name: obstack-default
     interval: 30s
     rules:
       - alert: ServiceDown
@@ -30,7 +30,7 @@ groups:
           description: "OTel Collector refused {{ $value }} spans/sec in the last 5 minutes."
 
       - alert: HighMemoryUsage
-        expr: (container_memory_usage_bytes{name=~"otel-jps-.*"} / container_spec_memory_limit_bytes{name=~"otel-jps-.*"}) > 0.85
+        expr: (container_memory_usage_bytes{name=~"obstack-.*"} / container_spec_memory_limit_bytes{name=~"obstack-.*"}) > 0.85
         for: 5m
         labels:
           severity: warning
@@ -39,7 +39,7 @@ groups:
           description: "Container {{ $labels.name }} is using {{ $value | humanizePercentage }} of its memory limit."
 
       - alert: HighCPUUsage
-        expr: rate(container_cpu_usage_seconds_total{name=~"otel-jps-.*"}[5m]) > 0.9
+        expr: rate(container_cpu_usage_seconds_total{name=~"obstack-.*"}[5m]) > 0.9
         for: 10m
         labels:
           severity: warning
@@ -84,7 +84,7 @@ groups:
           description: "Queue {{ $labels.exporter }} is {{ $value | humanizePercentage }} full — backpressure imminent."
 
       - alert: ContainerRestartLoop
-        expr: changes(container_start_time_seconds{name=~"otel-jps-.*"}[10m]) > 3
+        expr: changes(container_start_time_seconds{name=~"obstack-.*"}[10m]) > 3
         for: 0m
         labels:
           severity: critical

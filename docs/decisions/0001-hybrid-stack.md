@@ -5,7 +5,7 @@
 
 ## Context
 
-OTel-jps targets self-hosters running on a single 4 GB VPS. The original positioning — *"Grafana LGTM+P pre-assembled"* — turned out to be redundant: Grafana already ships [`grafana/docker-otel-lgtm`](https://hub.docker.com/r/grafana/otel-lgtm), an official one-shot image bundling the full stack.
+obstack targets self-hosters running on a single 4 GB VPS. The original positioning — *"Grafana LGTM+P pre-assembled"* — turned out to be redundant: Grafana already ships [`grafana/docker-otel-lgtm`](https://hub.docker.com/r/grafana/otel-lgtm), an official one-shot image bundling the full stack.
 
 We also discovered that the LGTM data plane is architecturally hostile to small machines:
 
@@ -51,5 +51,5 @@ The stack is "hybrid" in the sense that the **data plane** uses non-Grafana comp
 - [VictoriaMetrics vs Mimir benchmark](https://victoriametrics.com/blog/mimir-benchmark/)
 - [VictoriaLogs vs Loki benchmark (TrueFoundry)](https://www.truefoundry.com/blog/victorialogs-vs-loki)
 - [Loki monolithic memory issues (GitHub #13501)](https://github.com/grafana/loki/issues/13501)
-- [Spec §4.1 — Stack selection](../superpowers/specs/2026-04-25-otel-jps-redesign.md)
+- [Spec §4.1 — Stack selection](../superpowers/specs/2026-04-25-obstack-redesign.md)
 - Related: [ADR 0004 — No MinIO at Simple](0004-no-minio-for-simple.md), [ADR 0005 — Prometheus over Mimir](0005-prometheus-not-mimir-for-simple.md)

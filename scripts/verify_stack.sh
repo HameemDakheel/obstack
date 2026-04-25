@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# verify_stack.sh — health-check every component in the OTel-jps stack.
+# verify_stack.sh — health-check every component in the obstack stack.
 # Probes services from INSIDE the Caddy container (which has wget and lives
 # on the obs-net network), so distroless backends can still be verified.
 # Usage: ./scripts/verify_stack.sh
@@ -10,7 +10,7 @@ set -euo pipefail
 DOMAIN="${DOMAIN:-localhost}"
 SCHEME="${SCHEME:-https}"
 TIMEOUT="${TIMEOUT:-10}"
-PROBE_CONTAINER="${PROBE_CONTAINER:-otel-jps-caddy}"
+PROBE_CONTAINER="${PROBE_CONTAINER:-obstack-caddy}"
 
 # Component → (internal URL, expected substring or empty for HTTP 200)
 declare -A CHECKS=(
@@ -46,7 +46,7 @@ check_component() {
   return 0
 }
 
-echo "── OTel-jps stack verification ──────────────────"
+echo "── obstack stack verification ──────────────────"
 
 # Caddy itself is the probe — verify it's running first
 if ! docker inspect --format='{{.State.Status}}' "$PROBE_CONTAINER" 2>/dev/null | grep -q running; then

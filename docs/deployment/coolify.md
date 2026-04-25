@@ -3,9 +3,9 @@
 > **What you'll need:** a working Coolify ≥ 4.0 instance with a server attached, a domain (auto-provisioned by Coolify works fine), and the basic-auth bcrypt hash you'll generate in Step 3.
 > **Time to complete:** ~10 minutes.
 
-[Coolify](https://coolify.io) is a self-hostable Heroku/Vercel alternative. It's *the* common way our beachhead audience runs production workloads on a single VPS — perfect fit for OTel-jps.
+[Coolify](https://coolify.io) is a self-hostable Heroku/Vercel alternative. It's *the* common way our beachhead audience runs production workloads on a single VPS — perfect fit for obstack.
 
-This guide deploys OTel-jps as a Custom Compose resource inside Coolify so it gets the auto-issued domain, Let's Encrypt cert, and one-click upgrade workflow.
+This guide deploys obstack as a Custom Compose resource inside Coolify so it gets the auto-issued domain, Let's Encrypt cert, and one-click upgrade workflow.
 
 ---
 
@@ -44,7 +44,7 @@ Copy the `$2a$14$...` output. Keep your plaintext password too — your apps nee
 ## Step 4 — Paste the compose file
 
 1. In the Coolify resource UI, find the **Docker Compose** field.
-2. Paste the contents of [`templates/coolify/docker-compose.yml`](https://github.com/HameemDakheel/OTel-jps/blob/main/templates/coolify/docker-compose.yml) from the OTel-jps repo.
+2. Paste the contents of [`templates/coolify/docker-compose.yml`](https://github.com/HameemDakheel/obstack/blob/main/templates/coolify/docker-compose.yml) from the obstack repo.
 
 The compose file uses `${SERVICE_FQDN_GRAFANA}` — Coolify substitutes this automatically with the domain it issues for your service.
 
@@ -76,7 +76,7 @@ The compose file references several config files (Caddyfile, prometheus.yml, etc
 
 For each `./xxx.yaml` reference in the compose file, add a Custom Mount that points to the file. The mapping:
 
-| In compose | Pull from OTel-jps repo path |
+| In compose | Pull from obstack repo path |
 |------------|------------------------------|
 | `./Caddyfile` | `configs/caddy/Caddyfile` |
 | `./otel-collector-config.yaml` | `configs/otel-collector/config.yaml` |
@@ -89,12 +89,12 @@ For each `./xxx.yaml` reference in the compose file, add a Custom Mount that poi
 
 ### Option B — Clone-then-deploy
 
-SSH into the Coolify server, clone the OTel-jps repo into Coolify's resource working directory, and let Coolify pick up the files. Heavier but simpler if you're comfortable with shell:
+SSH into the Coolify server, clone the obstack repo into Coolify's resource working directory, and let Coolify pick up the files. Heavier but simpler if you're comfortable with shell:
 
 ```bash
 ssh <coolify-server>
 cd /data/coolify/applications/<resource-uuid>/
-sudo git clone --branch v1.0.0-alpha.4 https://github.com/HameemDakheel/OTel-jps.git tmp
+sudo git clone --branch v1.0.0-alpha.4 https://github.com/HameemDakheel/obstack.git tmp
 sudo cp -r tmp/configs/caddy/Caddyfile ./Caddyfile
 # ... repeat for each file
 sudo rm -rf tmp
@@ -116,7 +116,7 @@ In Coolify's resource view, **Deployments** tab — wait for "Running."
 
 Open the auto-issued domain (Coolify shows it at the top of the resource UI). Login: `admin` / your `GRAFANA_ADMIN_PASSWORD` (visible in Coolify's env-vars tab if Coolify generated it).
 
-You should see 4 dashboards in the OTel-jps folder, populated with live data.
+You should see 4 dashboards in the obstack folder, populated with live data.
 
 ---
 
@@ -169,4 +169,4 @@ See the [instrumentation guides](../instrumentation/nodejs.md) for language-spec
 - [Quickstart](../quickstart.md) — minimum walkthrough
 - [Architecture](../architecture.md)
 - [Coolify documentation](https://coolify.io/docs/)
-- [Coolify template README](https://github.com/HameemDakheel/OTel-jps/blob/main/templates/coolify/README.md)
+- [Coolify template README](https://github.com/HameemDakheel/obstack/blob/main/templates/coolify/README.md)

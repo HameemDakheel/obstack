@@ -1,8 +1,8 @@
 # Default alerts
 
-> Source of truth: [`alerts/default-rules.yaml`](https://github.com/HameemDakheel/OTel-jps/blob/main/alerts/default-rules.yaml)
+> Source of truth: [`alerts/default-rules.yaml`](https://github.com/HameemDakheel/obstack/blob/main/alerts/default-rules.yaml)
 
-OTel-jps ships with 12 pre-tuned alerts covering the most common production failures. Loaded by Prometheus on startup and routed via Grafana Alerting to the configured webhook.
+obstack ships with 12 pre-tuned alerts covering the most common production failures. Loaded by Prometheus on startup and routed via Grafana Alerting to the configured webhook.
 
 ---
 
@@ -38,14 +38,14 @@ docker compose -f docker-compose.yml -f compose/simple.yml restart prometheus
 Verify the new rule loaded:
 
 ```bash
-docker exec otel-jps-caddy wget -qO- 'http://prometheus:9090/api/v1/rules' | grep -o '"name":"<your_alert>"'
+docker exec obstack-caddy wget -qO- 'http://prometheus:9090/api/v1/rules' | grep -o '"name":"<your_alert>"'
 ```
 
 ---
 
 ## Routing & notifications
 
-Default routing in [`configs/grafana/provisioning/alerting/notification-policies.yaml`](https://github.com/HameemDakheel/OTel-jps/blob/main/configs/grafana/provisioning/alerting/notification-policies.yaml):
+Default routing in [`configs/grafana/provisioning/alerting/notification-policies.yaml`](https://github.com/HameemDakheel/obstack/blob/main/configs/grafana/provisioning/alerting/notification-policies.yaml):
 
 - `severity = info` → blackhole receiver (silently dropped)
 - everything else → `default-webhook` (configurable via `ALERT_WEBHOOK_URL` env var)
@@ -60,6 +60,6 @@ Group settings:
 
 ## See also
 
-- [`alerts/default-rules.yaml`](https://github.com/HameemDakheel/OTel-jps/blob/main/alerts/default-rules.yaml)
+- [`alerts/default-rules.yaml`](https://github.com/HameemDakheel/obstack/blob/main/alerts/default-rules.yaml)
 - [Default dashboards](default-dashboards.md)
 - [Operations / Troubleshooting](../operations/troubleshooting.md)

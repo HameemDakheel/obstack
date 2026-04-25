@@ -28,7 +28,7 @@ Use **Caddy v2** as the reverse proxy at Simple profile.
 - **Auto-TLS in 3 lines of Caddyfile.** No certbot. No renewal cron. No ACME challenge endpoints. Caddy handles renewals automatically before expiry.
 - **Single binary** (~30 MB resident at runtime) — fits comfortably in the RAM budget.
 - **Familiar to the target audience** — Coolify, Dokploy, and most modern self-host PaaS bundle Caddy or recommend it.
-- **Cleaner config** — Caddyfile is much shorter than equivalent nginx + certbot setup. The OTel-jps Caddyfile is ~30 lines including comments.
+- **Cleaner config** — Caddyfile is much shorter than equivalent nginx + certbot setup. The obstack Caddyfile is ~30 lines including comments.
 
 **Negative:**
 - Smaller community than Nginx (~50K vs ~22K GitHub stars; broader Stack Overflow corpus for Nginx).
@@ -43,4 +43,4 @@ Use **Caddy v2** as the reverse proxy at Simple profile.
 
 - [Caddy automatic HTTPS](https://caddyserver.com/docs/automatic-https)
 - [Caddy vs Nginx vs Traefik 2026 comparison](https://selfhostwise.com/posts/traefik-vs-caddy-vs-nginx-proxy-manager-which-reverse-proxy-should-you-choose-in-2026/)
-- [Spec §4.1 — Stack selection](../superpowers/specs/2026-04-25-otel-jps-redesign.md)
+- [Spec §4.1 — Stack selection](../superpowers/specs/2026-04-25-obstack-redesign.md)

@@ -1,4 +1,4 @@
-# OTel-jps developer shortcuts
+# obstack developer shortcuts
 .DEFAULT_GOAL := help
 
 COMPOSE       := docker compose -f docker-compose.yml

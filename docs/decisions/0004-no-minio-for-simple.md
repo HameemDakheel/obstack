@@ -49,4 +49,4 @@ MinIO **returns** at the Scale profile (v2) when the operator actually has multi
 - [MinIO 1 GiB preallocation discussion](https://github.com/minio/minio/discussions/19133)
 - [Tempo filesystem backend docs](https://grafana.com/docs/tempo/latest/configuration/#local-storage-recommendations)
 - [Mimir filesystem alternative (rmoff)](https://rmoff.net/2026/01/14/alternatives-to-minio-for-single-node-local-s3/)
-- [Spec §4.1 — Stack selection](../superpowers/specs/2026-04-25-otel-jps-redesign.md)
+- [Spec §4.1 — Stack selection](../superpowers/specs/2026-04-25-obstack-redesign.md)

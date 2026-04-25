@@ -1,7 +1,7 @@
 {
-  "title": "OTel-jps · Logs Explorer",
-  "uid": "otel-jps-logs-explorer",
-  "tags": ["otel-jps", "logs"],
+  "title": "obstack · Logs Explorer",
+  "uid": "obstack-logs-explorer",
+  "tags": ["obstack", "logs"],
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 1,

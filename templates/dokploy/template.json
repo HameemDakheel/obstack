@@ -1,13 +1,13 @@
 {
-  "id": "otel-jps",
-  "name": "OTel-jps",
+  "id": "obstack",
+  "name": "obstack",
   "version": "v1.0.0-alpha.4",
   "description": "Production observability for your $20/month VPS — all 5 signals, one command. OpenTelemetry-native: Prometheus + VictoriaLogs + Tempo + Pyroscope + Grafana + OTel Collector + Caddy. ~310 MB idle.",
-  "logo": "https://raw.githubusercontent.com/HameemDakheel/OTel-jps/main/assets/logo.png",
+  "logo": "https://raw.githubusercontent.com/HameemDakheel/obstack/main/assets/logo.png",
   "links": {
-    "github": "https://github.com/HameemDakheel/OTel-jps",
-    "website": "https://otel-jps.dev",
-    "docs": "https://github.com/HameemDakheel/OTel-jps/blob/main/docs/deployment/dokploy.md"
+    "github": "https://github.com/HameemDakheel/obstack",
+    "website": "https://obstack.dev",
+    "docs": "https://github.com/HameemDakheel/obstack/blob/main/docs/deployment/dokploy.md"
   },
   "tags": ["observability", "monitoring", "opentelemetry", "grafana", "prometheus", "tempo", "pyroscope", "victorialogs"],
   "envs": [

@@ -26,10 +26,10 @@
 docker compose -f docker-compose.yml -f compose/simple.yml ps
 
 # 2. Read the most recent logs
-docker logs otel-jps-<service> --tail 50
+docker logs obstack-<service> --tail 50
 
 # 3. Did it OOM?
-docker inspect otel-jps-<service> | grep -i 'oomkilled\|exitcode'
+docker inspect obstack-<service> | grep -i 'oomkilled\|exitcode'
 
 # 4. Compose config valid?
 docker compose -f docker-compose.yml -f compose/simple.yml config --quiet
@@ -103,7 +103,7 @@ docker pull <image>
 Rare but happens when host is restored from backup and UIDs differ.
 
 ```bash
-sudo chown -R 472:472 /var/lib/docker/volumes/otel-jps_grafana_data/_data
+sudo chown -R 472:472 /var/lib/docker/volumes/obstack_grafana_data/_data
 # (Grafana's UID inside container is 472)
 ```
 
@@ -120,7 +120,7 @@ docker compose -f docker-compose.yml -f compose/simple.yml ps
 
 - Pin every image to an exact tag (already done).
 - Run `docker compose config --quiet` in CI before merging config changes (Phase 5 sets this up).
-- Set up host-level monitoring outside OTel-jps so you find out about service-down even when *Prometheus itself* is the failed service.
+- Set up host-level monitoring outside obstack so you find out about service-down even when *Prometheus itself* is the failed service.
 - Capacity-plan memory limits — the defaults work for low-volume; double them for moderate production.
 
 ## See also

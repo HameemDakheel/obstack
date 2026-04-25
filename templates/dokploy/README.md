@@ -1,6 +1,6 @@
-# OTel-jps for Dokploy
+# obstack for Dokploy
 
-This template lets [Dokploy](https://dokploy.com) users deploy OTel-jps with one click via Dokploy's Templates marketplace.
+This template lets [Dokploy](https://dokploy.com) users deploy obstack with one click via Dokploy's Templates marketplace.
 
 ## Files
 
@@ -9,7 +9,7 @@ This template lets [Dokploy](https://dokploy.com) users deploy OTel-jps with one
 | `template.json` | Dokploy template metadata (name, description, env-var prompts, logo, links) |
 | `docker-compose.yml` | Self-contained compose, all services + resource limits in one file |
 
-## Why Dokploy is a great fit for OTel-jps
+## Why Dokploy is a great fit for obstack
 
 Dokploy's template format supports:
 - **`${randomPassword}`** — auto-generates strong random passwords (we use this for `GRAFANA_ADMIN_PASSWORD`)
@@ -30,7 +30,7 @@ This gives a much smoother first-run UX than systems where every secret has to b
 
 The Dokploy Templates marketplace at <https://github.com/Dokploy/templates> accepts community-contributed templates via PR. See the marketplace's contribution guide for the exact format.
 
-When approved, OTel-jps shows up in **Create Service → Browse templates** and installs in two clicks.
+When approved, obstack shows up in **Create Service → Browse templates** and installs in two clicks.
 
 ## Sibling files needed
 
@@ -61,6 +61,6 @@ Use Dokploy's "Pull and restart" action on the service. Equivalent to running `m
 
 ## See also
 
-- [Dokploy deployment guide](https://github.com/HameemDakheel/OTel-jps/blob/main/docs/deployment/dokploy.md) — full step-by-step
+- [Dokploy deployment guide](https://github.com/HameemDakheel/obstack/blob/main/docs/deployment/dokploy.md) — full step-by-step
 - [Dokploy documentation](https://docs.dokploy.com)
-- [Architecture](https://github.com/HameemDakheel/OTel-jps/blob/main/docs/architecture.md)
+- [Architecture](https://github.com/HameemDakheel/obstack/blob/main/docs/architecture.md)

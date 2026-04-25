@@ -1,6 +1,6 @@
 # Troubleshooting
 
-> **Audience:** anyone running OTel-jps and hitting a problem. Lookup table first; deep-dive sections below.
+> **Audience:** anyone running obstack and hitting a problem. Lookup table first; deep-dive sections below.
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Symptom | Likely cause | Where to look |
 |---------|-------------|---------------|
-| `make verify` fails on a service | Container crashed or healthcheck failed | `docker logs otel-jps-<service>` |
+| `make verify` fails on a service | Container crashed or healthcheck failed | `docker logs obstack-<service>` |
 | Browser warns about untrusted cert | `DOMAIN=localhost` (self-signed) | Expected for dev — accept and proceed |
 | Browser cert error at real domain | Caddy can't reach Let's Encrypt | Check ports 80/443 firewall |
 | Grafana login fails | `GRAFANA_ADMIN_PASSWORD` mismatch | Update `.env`, restart Grafana |
@@ -20,7 +20,7 @@
 | Prometheus OOMs | Cardinality explosion | See [high-cardinality runbook](runbooks/high-cardinality.md) |
 | Cert about to expire | Auto-renewal failed | See [cert-renewal runbook](runbooks/cert-renewal.md) |
 | Datasource shows red in Grafana | Backend unreachable from Grafana | `make verify` from host, then check Docker network |
-| VictoriaLogs is empty | OTel Collector not exporting | `docker logs otel-jps-otelcol \| grep -i error` |
+| VictoriaLogs is empty | OTel Collector not exporting | `docker logs obstack-otelcol \| grep -i error` |
 
 ---
 
@@ -32,7 +32,7 @@
 
 ```bash
 # Verify Caddy basic auth config
-docker exec otel-jps-caddy cat /etc/caddy/Caddyfile | grep -A 3 basic_auth
+docker exec obstack-caddy cat /etc/caddy/Caddyfile | grep -A 3 basic_auth
 
 # Test auth manually with the credentials you're using
 echo -n 'ingest:YOUR_PASSWORD' | base64
@@ -59,7 +59,7 @@ make verify
 If verify passes, the backend is healthy *from inside the network* — Grafana should reach it. Try:
 
 ```bash
-docker exec otel-jps-grafana wget -qO- http://prometheus:9090/-/ready
+docker exec obstack-grafana wget -qO- http://prometheus:9090/-/ready
 ```
 
 (replace `prometheus:9090` with the failing datasource's URL).
@@ -78,13 +78,13 @@ docker exec otel-jps-grafana wget -qO- http://prometheus:9090/-/ready
 
 ```bash
 # Is OTel Collector accepting logs?
-docker exec otel-jps-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=otelcol_receiver_accepted_log_records_total' | grep value
+docker exec obstack-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=otelcol_receiver_accepted_log_records_total' | grep value
 
 # Is VictoriaLogs ingesting?
-docker exec otel-jps-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=vl_rows_ingested_total' | grep value
+docker exec obstack-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=vl_rows_ingested_total' | grep value
 
 # Is the VictoriaLogs export pipeline working?
-docker logs otel-jps-otelcol 2>&1 | grep -i 'logs\|error' | tail -20
+docker logs obstack-otelcol 2>&1 | grep -i 'logs\|error' | tail -20
 ```
 
 **Common fixes:**
@@ -101,7 +101,7 @@ docker logs otel-jps-otelcol 2>&1 | grep -i 'logs\|error' | tail -20
 **Diagnose:**
 
 ```bash
-docker exec otel-jps-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=prometheus_tsdb_head_series' | grep value
+docker exec obstack-caddy wget -qO- 'http://prometheus:9090/api/v1/query?query=prometheus_tsdb_head_series' | grep value
 ```
 
 If the value is >1M, you have cardinality explosion. See [high-cardinality runbook](runbooks/high-cardinality.md).
@@ -136,12 +136,12 @@ If a problem isn't covered here:
    ```bash
    docker compose -f docker-compose.yml -f compose/simple.yml ps > /tmp/ps.txt
    for c in caddy otel-collector prometheus victorialogs tempo pyroscope grafana cadvisor; do
-     docker logs otel-jps-$c --tail 100 > /tmp/${c}.log 2>&1
+     docker logs obstack-$c --tail 100 > /tmp/${c}.log 2>&1
    done
    make verify > /tmp/verify.txt 2>&1
    ```
 
-2. Check existing GitHub issues: <https://github.com/HameemDakheel/OTel-jps/issues>
+2. Check existing GitHub issues: <https://github.com/HameemDakheel/obstack/issues>
 
 3. If new, file an issue with:
    - Output of `make verify`

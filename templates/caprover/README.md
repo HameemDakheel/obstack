@@ -1,6 +1,6 @@
-# OTel-jps for CapRover
+# obstack for CapRover
 
-This template deploys OTel-jps as a multi-service One-Click App in [CapRover](https://caprover.com).
+This template deploys obstack as a multi-service One-Click App in [CapRover](https://caprover.com).
 
 ## Files
 
@@ -43,7 +43,7 @@ Each one shows up in the CapRover dashboard separately. You can scale, restart, 
 
 ### Path B — Submit to the official One-Click Apps repo
 
-The CapRover One-Click Apps registry at <https://github.com/caprover/one-click-apps> accepts community submissions via PR. When approved, OTel-jps appears in the **One-Click Apps/Databases** list directly — users get one-click install with no copy/paste.
+The CapRover One-Click Apps registry at <https://github.com/caprover/one-click-apps> accepts community submissions via PR. When approved, obstack appears in the **One-Click Apps/Databases** list directly — users get one-click install with no copy/paste.
 
 ## Persistent storage
 
@@ -74,6 +74,6 @@ The simplest near-term path: clone the repo on the CapRover host, then bind-moun
 
 ## See also
 
-- [CapRover deployment guide](https://github.com/HameemDakheel/OTel-jps/blob/main/docs/deployment/caprover.md) — full step-by-step
+- [CapRover deployment guide](https://github.com/HameemDakheel/obstack/blob/main/docs/deployment/caprover.md) — full step-by-step
 - [CapRover One-Click Apps documentation](https://caprover.com/docs/one-click-apps.html)
-- [Architecture](https://github.com/HameemDakheel/OTel-jps/blob/main/docs/architecture.md)
+- [Architecture](https://github.com/HameemDakheel/obstack/blob/main/docs/architecture.md)

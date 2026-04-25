@@ -1,10 +1,10 @@
 # Deploy with Docker Compose
 
-> **Audience:** anyone deploying OTel-jps directly on a Linux host (not a managed PaaS).
+> **Audience:** anyone deploying obstack directly on a Linux host (not a managed PaaS).
 > **What you'll need:** root or sudo, Docker 24+, Docker Compose v2, ≥4 GB RAM.
 > **Time to complete:** ~15 minutes (most of which is the first image pull).
 
-This is the canonical "fresh VPS" install. PaaS-specific guides (Coolify, Dokploy, CapRover, Jelastic) are forthcoming in [Phase 4](../superpowers/plans/2026-04-25-otel-jps-redesign-INDEX.md) and reuse this stack underneath.
+This is the canonical "fresh VPS" install. PaaS-specific guides (Coolify, Dokploy, CapRover, Jelastic) are forthcoming in [Phase 4](../superpowers/plans/2026-04-25-obstack-redesign-INDEX.md) and reuse this stack underneath.
 
 ---
 
@@ -63,13 +63,13 @@ docker compose version
 
 ---
 
-## Step 3 — Clone OTel-jps
+## Step 3 — Clone obstack
 
 ```bash
 sudo mkdir -p /opt && sudo chown $USER /opt
 cd /opt
-git clone https://github.com/HameemDakheel/OTel-jps.git
-cd OTel-jps
+git clone https://github.com/HameemDakheel/obstack.git
+cd obstack
 ```
 
 ---
@@ -128,11 +128,11 @@ If any service fails, see [Troubleshooting](../operations/troubleshooting.md).
 
 ## Step 6 — Open Grafana
 
-Visit `https://<YOUR_DOMAIN>/`. Login with `admin` / your `GRAFANA_ADMIN_PASSWORD`. Browse the four pre-loaded dashboards in the **OTel-jps** folder.
+Visit `https://<YOUR_DOMAIN>/`. Login with `admin` / your `GRAFANA_ADMIN_PASSWORD`. Browse the four pre-loaded dashboards in the **obstack** folder.
 
 ---
 
-## Step 7 — Point your apps at OTel-jps
+## Step 7 — Point your apps at obstack
 
 Apps emit OTLP to:
 
@@ -172,7 +172,7 @@ Routine maintenance:
 
 ---
 
-## Reverse proxies in front of OTel-jps
+## Reverse proxies in front of obstack
 
 Caddy already terminates TLS for the stack — putting another reverse proxy in front (Cloudflare, Nginx, Traefik) is **not necessary** and complicates Let's Encrypt issuance.
 

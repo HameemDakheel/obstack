@@ -19,9 +19,9 @@ The order and timing matter — fastest signal-amplification path:
 - [ ] Push the `v1.0.0` tag to `origin` (`git push --tags origin`)
 - [ ] Create the v1.0.0 GitHub release with CHANGELOG excerpt as release notes
 - [ ] Verify GitHub Pages is enabled on the repo (Settings → Pages → Source: GitHub Actions)
-- [ ] Trigger `deploy-docs.yml` manually once to confirm `https://otel-jps.dev` (or the GitHub Pages URL) is live
+- [ ] Trigger `deploy-docs.yml` manually once to confirm `https://obstack.dev` (or the GitHub Pages URL) is live
 - [ ] Capture all screenshots per `assets/screenshots/README.md` and embed in the README
-- [ ] Set up Google Alerts for "OTel-jps" so you see external mentions
+- [ ] Set up Google Alerts for "obstack" so you see external mentions
 - [ ] Have a fresh terminal with the stack running for live screenshot answers
 
 ### Day 0 (launch)
@@ -41,7 +41,7 @@ The order and timing matter — fastest signal-amplification path:
 
 ### Week +1
 
-- [ ] Submit OTel-jps templates to:
+- [ ] Submit obstack templates to:
   - Coolify Templates: <https://github.com/coollabsio/coolify> (pull request to their templates repo)
   - Dokploy Templates: <https://github.com/Dokploy/templates>
   - CapRover One-Click Apps: <https://github.com/caprover/one-click-apps>
@@ -59,9 +59,9 @@ The order and timing matter — fastest signal-amplification path:
 ## Tone notes
 
 - **Don't oversell.** "$20/month VPS" is a strong claim; back it with the measured 311 MB idle number.
-- **Acknowledge competitors directly.** Not "OTel-jps is better than X." More: "Here's where OTel-jps differs and where competitors are still better."
+- **Acknowledge competitors directly.** Not "obstack is better than X." More: "Here's where obstack differs and where competitors are still better."
 - **Be honest about scope.** "Single-VPS only at v1; Standard / Scale / Enterprise profiles in future releases." HN catches overpromising in seconds.
-- **Don't sneak in a paywall.** OTel-jps is MIT, full stop. There's no "OTel-jps Cloud" surprise behind a feature flag.
+- **Don't sneak in a paywall.** obstack is MIT, full stop. There's no "obstack Cloud" surprise behind a feature flag.
 
 ## Anti-patterns to avoid
 

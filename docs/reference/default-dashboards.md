@@ -1,8 +1,8 @@
 # Default dashboards
 
-> Source of truth: [`configs/grafana/dashboards/`](https://github.com/HameemDakheel/OTel-jps/tree/main/configs/grafana/dashboards)
+> Source of truth: [`configs/grafana/dashboards/`](https://github.com/HameemDakheel/obstack/tree/main/configs/grafana/dashboards)
 
-Four dashboards ship with OTel-jps and are auto-provisioned into Grafana's "OTel-jps" folder on first launch.
+Four dashboards ship with obstack and are auto-provisioned into Grafana's "obstack" folder on first launch.
 
 ---
 
@@ -10,16 +10,16 @@ Four dashboards ship with OTel-jps and are auto-provisioned into Grafana's "OTel
 
 | Dashboard | UID | Datasources | What it shows |
 |-----------|-----|-------------|---------------|
-| **Stack Health** | `otel-jps-stack-health` | Prometheus | Per-component up/down state, OTLP ingestion rate (traces/metrics/logs), per-component memory, Prometheus head series, Tempo blocks flushed |
-| **Container Metrics** | `otel-jps-container-metrics` | Prometheus (cAdvisor) | CPU usage by container, memory usage by container, network RX/TX |
-| **Logs Explorer** | `otel-jps-logs-explorer` | VictoriaLogs | Recent logs (live tail), total log volume |
-| **Traces Browser** | `otel-jps-traces-browser` | Tempo + Prometheus | Service graph (from Tempo `metrics_generator`), span duration heatmap |
+| **Stack Health** | `obstack-stack-health` | Prometheus | Per-component up/down state, OTLP ingestion rate (traces/metrics/logs), per-component memory, Prometheus head series, Tempo blocks flushed |
+| **Container Metrics** | `obstack-container-metrics` | Prometheus (cAdvisor) | CPU usage by container, memory usage by container, network RX/TX |
+| **Logs Explorer** | `obstack-logs-explorer` | VictoriaLogs | Recent logs (live tail), total log volume |
+| **Traces Browser** | `obstack-traces-browser` | Tempo + Prometheus | Service graph (from Tempo `metrics_generator`), span duration heatmap |
 
 ---
 
 ## Adding your own dashboards
 
-Drop a Grafana JSON dashboard file into `configs/grafana/dashboards/` (no subfolders required). Grafana picks it up via the provisioning loop (refreshes every 30 s). The dashboard appears in the "OTel-jps" folder automatically.
+Drop a Grafana JSON dashboard file into `configs/grafana/dashboards/` (no subfolders required). Grafana picks it up via the provisioning loop (refreshes every 30 s). The dashboard appears in the "obstack" folder automatically.
 
 To export an existing dashboard from Grafana for version control:
 1. Open the dashboard.
@@ -33,14 +33,14 @@ After committing, the dashboard is preserved across `make clean` (the JSON lives
 
 ## Dashboard provisioning config
 
-[`configs/grafana/provisioning/dashboards/dashboards.yaml`](https://github.com/HameemDakheel/OTel-jps/blob/main/configs/grafana/provisioning/dashboards/dashboards.yaml) tells Grafana to load every JSON in the dashboards directory into the "OTel-jps" folder. Key settings:
+[`configs/grafana/provisioning/dashboards/dashboards.yaml`](https://github.com/HameemDakheel/obstack/blob/main/configs/grafana/provisioning/dashboards/dashboards.yaml) tells Grafana to load every JSON in the dashboards directory into the "obstack" folder. Key settings:
 
 ```yaml
 apiVersion: 1
 providers:
-  - name: 'OTel-jps default dashboards'
+  - name: 'obstack default dashboards'
     orgId: 1
-    folder: 'OTel-jps'                     # destination folder in Grafana UI
+    folder: 'obstack'                     # destination folder in Grafana UI
     type: file
     disableDeletion: false                  # users can delete via UI; provisioning recreates on restart
     editable: true                          # users can save edits in Grafana
@@ -69,6 +69,6 @@ When writing custom dashboards, use these UIDs in panel `datasource` fields so t
 
 ## See also
 
-- [`configs/grafana/dashboards/`](https://github.com/HameemDakheel/OTel-jps/tree/main/configs/grafana/dashboards) — the JSON files
+- [`configs/grafana/dashboards/`](https://github.com/HameemDakheel/obstack/tree/main/configs/grafana/dashboards) — the JSON files
 - [Default alerts](default-alerts.md)
 - [Architecture](../architecture.md)

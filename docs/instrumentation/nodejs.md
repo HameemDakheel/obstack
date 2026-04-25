@@ -1,9 +1,9 @@
 # Node.js instrumentation
 
-> **What you'll need:** Node 18+, an OTel-jps stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
+> **What you'll need:** Node 18+, an obstack stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
 > **Time to complete:** ~10 minutes.
 
-This guide gets traces, metrics, and logs flowing from a Node.js app into your OTel-jps stack using **auto-instrumentation** — no code changes required for most popular libraries (HTTP, Express, Postgres, Redis, etc.).
+This guide gets traces, metrics, and logs flowing from a Node.js app into your obstack stack using **auto-instrumentation** — no code changes required for most popular libraries (HTTP, Express, Postgres, Redis, etc.).
 
 ---
 
@@ -100,8 +100,8 @@ Open Grafana → **Explore** → datasource: **Tempo** → switch to "Search" ta
 You should see your `hello-world` span within ~10 seconds (OTel batching + Tempo flush interval).
 
 For auto-instrumented traffic, also check:
-- **Dashboards → OTel-jps → Traces Browser** — your service appears in the service graph
-- **Dashboards → OTel-jps → Logs Explorer** — application logs (if you have a logger pipe configured)
+- **Dashboards → obstack → Traces Browser** — your service appears in the service graph
+- **Dashboards → obstack → Logs Explorer** — application logs (if you have a logger pipe configured)
 
 ---
 

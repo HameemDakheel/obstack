@@ -1,12 +1,12 @@
 # Architecture
 
-> **Audience:** anyone curious about *why* OTel-jps looks the way it does, what's inside, and how data flows through it. Read after [Quickstart](quickstart.md).
+> **Audience:** anyone curious about *why* obstack looks the way it does, what's inside, and how data flows through it. Read after [Quickstart](quickstart.md).
 
 ---
 
 ## At a glance
 
-OTel-jps is an OpenTelemetry-native observability stack that runs as 8 Docker containers on a single VPS. Applications emit telemetry over OTLP, which Caddy proxies (with basic auth) to an OpenTelemetry Collector. The Collector fans out the four signals to four purpose-specific backends. Grafana provides a single UI for querying all of them.
+obstack is an OpenTelemetry-native observability stack that runs as 8 Docker containers on a single VPS. Applications emit telemetry over OTLP, which Caddy proxies (with basic auth) to an OpenTelemetry Collector. The Collector fans out the four signals to four purpose-specific backends. Grafana provides a single UI for querying all of them.
 
 Total idle RAM: **~310 MB** for the entire stack. Designed from the start for a 4 GB VPS, not down-scaled from an enterprise architecture.
 
@@ -144,13 +144,13 @@ At Simple profile, all backends use **filesystem storage** in named Docker volum
 
 | Volume | Container | Backend |
 |--------|-----------|---------|
-| `prometheus_data` | otel-jps-prometheus | Prometheus TSDB |
-| `victorialogs_data` | otel-jps-victorialogs | VictoriaLogs storage |
-| `tempo_data` | otel-jps-tempo | Tempo blocks + WAL |
-| `pyroscope_data` | otel-jps-pyroscope | Pyroscope DB + filesystem store |
-| `grafana_data` | otel-jps-grafana | Grafana DB + plugins + sessions |
-| `caddy_data` | otel-jps-caddy | Let's Encrypt certs |
-| `caddy_config` | otel-jps-caddy | Caddy config cache |
+| `prometheus_data` | obstack-prometheus | Prometheus TSDB |
+| `victorialogs_data` | obstack-victorialogs | VictoriaLogs storage |
+| `tempo_data` | obstack-tempo | Tempo blocks + WAL |
+| `pyroscope_data` | obstack-pyroscope | Pyroscope DB + filesystem store |
+| `grafana_data` | obstack-grafana | Grafana DB + plugins + sessions |
+| `caddy_data` | obstack-caddy | Let's Encrypt certs |
+| `caddy_config` | obstack-caddy | Caddy config cache |
 
 No MinIO. Documented in [ADR 0004](decisions/0004-no-minio-for-simple.md). MinIO returns at the Scale profile when multiple replicas need shared storage.
 
@@ -195,13 +195,13 @@ Adding ~700 MB for OS + Docker overhead → **~1 GB system idle on a 4 GB VPS**,
 - **AI triage / anomaly detection** — flagged as v2/v3 candidate.
 - **Datadog migrator** — flagged as v2/v3 candidate.
 
-See the [Spec](superpowers/specs/2026-04-25-otel-jps-redesign.md) §10 for the full open-questions list.
+See the [Spec](superpowers/specs/2026-04-25-obstack-redesign.md) §10 for the full open-questions list.
 
 ---
 
 ## Profiles preview
 
-OTel-jps has four profiles. Only **Simple** ships in v1:
+obstack has four profiles. Only **Simple** ships in v1:
 
 | Profile | Target machine | RAM | Retention | HA | Status |
 |---------|----------------|-----|-----------|----|----|

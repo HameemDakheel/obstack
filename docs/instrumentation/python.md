@@ -1,6 +1,6 @@
 # Python instrumentation
 
-> **What you'll need:** Python 3.10+, an OTel-jps stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
+> **What you'll need:** Python 3.10+, an obstack stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
 > **Time to complete:** ~10 minutes.
 
 This guide uses the **`opentelemetry-distro`** package which auto-instruments Flask, Django, FastAPI, requests, psycopg2, redis, pymongo, and ~30 other libraries with zero code changes.
@@ -95,8 +95,8 @@ python test_trace.py
 Open Grafana → **Explore** → datasource: **Tempo** → "Search" tab → service: `test-python-app`.
 
 For auto-instrumented apps, also check:
-- **Dashboards → OTel-jps → Traces Browser** — service graph includes your app
-- **Dashboards → OTel-jps → Logs Explorer** — application logs (Python logging module is auto-instrumented via `opentelemetry-instrumentation-logging`)
+- **Dashboards → obstack → Traces Browser** — service graph includes your app
+- **Dashboards → obstack → Logs Explorer** — application logs (Python logging module is auto-instrumented via `opentelemetry-instrumentation-logging`)
 
 ---
 

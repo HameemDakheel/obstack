@@ -43,5 +43,5 @@ VictoriaMetrics returns at the Scale profile as one of two upgrade paths (the ot
 
 - [Prometheus storage documentation](https://prometheus.io/docs/prometheus/latest/storage/)
 - [Prometheus remote-write receiver flag](https://prometheus.io/docs/prometheus/latest/feature_flags/#remote-write-receiver)
-- [Spec §4.1 — Stack selection](../superpowers/specs/2026-04-25-otel-jps-redesign.md)
+- [Spec §4.1 — Stack selection](../superpowers/specs/2026-04-25-obstack-redesign.md)
 - Related: [ADR 0001 — Hybrid stack](0001-hybrid-stack.md)

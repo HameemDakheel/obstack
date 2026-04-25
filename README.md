@@ -1,10 +1,10 @@
-# OTel-jps
+# obstack
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Stars](https://img.shields.io/github/stars/HameemDakheel/OTel-jps?style=social)](https://github.com/HameemDakheel/OTel-jps/stargazers)
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/HameemDakheel/OTel-jps/releases)
-[![Validate](https://github.com/HameemDakheel/OTel-jps/actions/workflows/validate.yml/badge.svg)](https://github.com/HameemDakheel/OTel-jps/actions/workflows/validate.yml)
-[![Docs](https://github.com/HameemDakheel/OTel-jps/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/HameemDakheel/OTel-jps/actions/workflows/deploy-docs.yml)
+[![Stars](https://img.shields.io/github/stars/HameemDakheel/obstack?style=social)](https://github.com/HameemDakheel/obstack/stargazers)
+[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/HameemDakheel/obstack/releases)
+[![Validate](https://github.com/HameemDakheel/obstack/actions/workflows/validate.yml/badge.svg)](https://github.com/HameemDakheel/obstack/actions/workflows/validate.yml)
+[![Docs](https://github.com/HameemDakheel/obstack/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/HameemDakheel/obstack/actions/workflows/deploy-docs.yml)
 
 > **Production observability for your $20/month VPS.** All 5 signals (logs, metrics, traces, profiles, dashboards). One command. No headache.
 
@@ -12,7 +12,7 @@
 
 ## What is this?
 
-OTel-jps is an OpenTelemetry-native observability stack you self-host on a single Linux VPS. After one command, you have:
+obstack is an OpenTelemetry-native observability stack you self-host on a single Linux VPS. After one command, you have:
 
 - **Grafana** with 4 pre-built dashboards already populated with live data
 - **Prometheus** for metrics
@@ -32,8 +32,8 @@ This is **not** an enterprise stack scaled down. It's an observability stack des
 ## Quick install
 
 ```bash
-git clone https://github.com/HameemDakheel/OTel-jps.git
-cd OTel-jps
+git clone https://github.com/HameemDakheel/obstack.git
+cd obstack
 cp .env.example .env
 
 # Generate basic-auth hash for OTLP ingestion
@@ -52,7 +52,7 @@ Full walkthrough: **[5-minute Quickstart](docs/quickstart.md)**.
 
 ## What you get out of the box
 
-Four pre-built dashboards in Grafana's "OTel-jps" folder, populated with **real data** from second 1 (the stack monitors itself):
+Four pre-built dashboards in Grafana's "obstack" folder, populated with **real data** from second 1 (the stack monitors itself):
 
 - **Stack Health** — every component up/down, OTLP ingestion rates by signal, per-component memory
 - **Container Metrics** — per-container CPU / RAM / network (cAdvisor)
@@ -65,7 +65,7 @@ Plus 12 pre-tuned alerts (service down, high error rate, disk full, cert expirin
 
 ## How it compares
 
-| | OTel-jps | SigNoz | OpenObserve | Grafana LGTM (DIY) | Datadog |
+| | obstack | SigNoz | OpenObserve | Grafana LGTM (DIY) | Datadog |
 |---|---------|--------|-------------|---------------------|---------|
 | **License** | MIT | Apache 2.0 | AGPL/Apache | AGPL (mixed) | Proprietary |
 | **Idle RAM** | ~310 MB | 4-152 GB | ~300 MB | ~3 GB | n/a |
@@ -117,7 +117,7 @@ Why these specific components and not LGTM directly? See:
 
 ## Profiles
 
-OTel-jps ships as one product with four profiles:
+obstack ships as one product with four profiles:
 
 | Profile | Target machine | RAM | Retention | HA | Status |
 |---------|----------------|-----|-----------|----|----|
@@ -148,7 +148,7 @@ Full docs index: **[docs/README.md](docs/README.md)**.
 
 ## Contributing
 
-OTel-jps is MIT-licensed and accepts contributions. Common ways to help:
+obstack is MIT-licensed and accepts contributions. Common ways to help:
 
 - File issues for bugs you hit
 - Send PRs for documentation improvements
@@ -161,7 +161,7 @@ For larger contributions, please open an issue first to discuss the approach.
 
 ## Acknowledgements
 
-OTel-jps stands on the shoulders of giants. We don't reinvent storage, query engines, or visualisation — we assemble a polished, resource-frugal product from existing best-of-breed open-source components:
+obstack stands on the shoulders of giants. We don't reinvent storage, query engines, or visualisation — we assemble a polished, resource-frugal product from existing best-of-breed open-source components:
 
 - **[OpenTelemetry](https://opentelemetry.io/)** — the standard we ingest, the protocol we speak.
 - **[Grafana](https://grafana.com/)** — the visual moat. Plus Tempo and Pyroscope come from the Grafana ecosystem.

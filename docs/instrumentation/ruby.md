@@ -1,6 +1,6 @@
 # Ruby instrumentation
 
-> **What you'll need:** Ruby 3.2+, an OTel-jps stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
+> **What you'll need:** Ruby 3.2+, an obstack stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
 > **Time to complete:** ~10 minutes.
 
 This guide uses the **`opentelemetry-instrumentation-all`** meta-gem which auto-instruments Rails, Sinatra, ActiveRecord, Net::HTTP, Sidekiq, Redis, PG, mysql2, and ~30 other gems.

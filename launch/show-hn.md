@@ -2,13 +2,13 @@
 
 ## Title
 
-**Show HN: OTel-jps – Production observability for your $20/month VPS**
+**Show HN: obstack – Production observability for your $20/month VPS**
 
 (Alt title if rejected for sounding salesy: *"Show HN: A 311 MB observability stack — Prometheus, Tempo, Pyroscope, Grafana, all 5 signals on a 4 GB VPS"*)
 
 ## URL
 
-`https://github.com/HameemDakheel/OTel-jps`
+`https://github.com/HameemDakheel/obstack`
 
 ## Submission text (the body of the Show HN post)
 
@@ -17,7 +17,7 @@ Hi HN. I've been frustrated for a while that "self-hosted observability" means e
   1. Run the official Grafana LGTM stack and watch it eat 3+ GB of RAM at idle on a small VPS, or
   2. Run something like SigNoz, which the docs say needs 56 CPU and 152 GB RAM in production.
 
-For solo devs and indie SaaS people running on a Hetzner or DO box, neither is reasonable. So I built OTel-jps — a hybrid stack that idles at 311 MB and gives you all 5 OpenTelemetry signals (logs, metrics, traces, profiles, dashboards) with one `make simple` command.
+For solo devs and indie SaaS people running on a Hetzner or DO box, neither is reasonable. So I built obstack — a hybrid stack that idles at 311 MB and gives you all 5 OpenTelemetry signals (logs, metrics, traces, profiles, dashboards) with one `make simple` command.
 
 Tech choices that mattered:
 - **VictoriaLogs instead of Loki** — same query language style, 87% less RAM, 94% lower query latency in independent benchmarks.
@@ -36,8 +36,8 @@ Total: 8 containers, ~310 MB idle. Tested on Ubuntu 24.04 with 4 GB RAM.
 
 I documented every architectural decision as an ADR (`docs/decisions/`), so when someone asks "why VictoriaLogs and not Loki?" I can point to the rationale instead of restating it. It's MIT-licensed.
 
-Repo: https://github.com/HameemDakheel/OTel-jps
-Quickstart (5 minutes): https://github.com/HameemDakheel/OTel-jps/blob/main/docs/quickstart.md
+Repo: https://github.com/HameemDakheel/obstack
+Quickstart (5 minutes): https://github.com/HameemDakheel/obstack/blob/main/docs/quickstart.md
 
 Happy to answer questions about the architecture, the tradeoffs, or anything you'd like to see added.
 
@@ -47,9 +47,9 @@ Happy to answer questions about the architecture, the tradeoffs, or anything you
 
 > Author here. A few things I figured I'd preempt:
 >
-> - **"Why not just use SigNoz?"** I explored that. SigNoz is great if you have the budget for the resource footprint and prefer the all-in-one approach with their custom UI. OTel-jps targets the smaller-machine end where SigNoz currently doesn't fit, and stays on Grafana for the UI which most devs already know.
+> - **"Why not just use SigNoz?"** I explored that. SigNoz is great if you have the budget for the resource footprint and prefer the all-in-one approach with their custom UI. obstack targets the smaller-machine end where SigNoz currently doesn't fit, and stays on Grafana for the UI which most devs already know.
 >
-> - **"How is this different from `grafana/docker-otel-lgtm`?"** Grafana ships an official one-shot LGTM image too, but it includes the heavyweight Mimir+Loki+MinIO data plane that's hostile to small VPSs. OTel-jps swaps out those three components for Prometheus + VictoriaLogs + filesystem storage, which is what makes the 311 MB idle achievable.
+> - **"How is this different from `grafana/docker-otel-lgtm`?"** Grafana ships an official one-shot LGTM image too, but it includes the heavyweight Mimir+Loki+MinIO data plane that's hostile to small VPSs. obstack swaps out those three components for Prometheus + VictoriaLogs + filesystem storage, which is what makes the 311 MB idle achievable.
 >
 > - **"Will this scale?"** Simple profile is single-node by design. The Standard profile (v1.1) and Scale profile (v2) are planned with Prometheus → VictoriaMetrics cluster (or Mimir) upgrade paths. If you're at 100 GB/day already, this is the wrong tool right now.
 >

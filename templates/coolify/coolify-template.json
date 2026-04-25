@@ -1,12 +1,12 @@
 {
-  "name": "OTel-jps",
+  "name": "obstack",
   "slogan": "Production observability for your $20/month VPS — all 5 signals, one command",
   "description": "OpenTelemetry-native observability stack: Prometheus + VictoriaLogs + Tempo + Pyroscope + Grafana + OTel Collector + Caddy. ~310 MB idle. 4 dashboards and 12 alerts pre-loaded. Compatible with the official OpenTelemetry demo.",
   "type": "compose",
   "tags": ["observability", "monitoring", "opentelemetry", "grafana", "prometheus", "victorialogs", "tempo", "pyroscope"],
-  "logo": "https://raw.githubusercontent.com/HameemDakheel/OTel-jps/main/assets/logo.png",
+  "logo": "https://raw.githubusercontent.com/HameemDakheel/obstack/main/assets/logo.png",
   "minimum_version": "4.0.0-beta.318",
-  "documentation_url": "https://github.com/HameemDakheel/OTel-jps/blob/main/docs/deployment/coolify.md",
+  "documentation_url": "https://github.com/HameemDakheel/obstack/blob/main/docs/deployment/coolify.md",
   "compose_file": "./docker-compose.yml",
   "envs": [
     {

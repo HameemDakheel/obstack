@@ -1,6 +1,6 @@
-# OTel-jps for Coolify
+# obstack for Coolify
 
-This template lets Coolify users deploy OTel-jps in a few clicks instead of running `git clone` and `make simple` manually on the server.
+This template lets Coolify users deploy obstack in a few clicks instead of running `git clone` and `make simple` manually on the server.
 
 ## Files
 
@@ -28,15 +28,15 @@ This template lets Coolify users deploy OTel-jps in a few clicks instead of runn
 
 The Coolify Templates registry at <https://github.com/coollabsio/coolify> accepts community-contributed templates via PR. See the registry's contribution guide for the exact format.
 
-When approved, OTel-jps shows up in the **Add resource → Browse templates** picker and installs with one click — no manual paste.
+When approved, obstack shows up in the **Add resource → Browse templates** picker and installs with one click — no manual paste.
 
 ## Persistent storage
 
-Coolify stores Docker volumes under `/var/lib/docker/volumes/` on the underlying server. Volume names are prefixed by Coolify's project + resource UUID, but the in-container paths and our backup procedures (see [docs/operations/backup-restore.md](https://github.com/HameemDakheel/OTel-jps/blob/main/docs/operations/backup-restore.md)) work the same.
+Coolify stores Docker volumes under `/var/lib/docker/volumes/` on the underlying server. Volume names are prefixed by Coolify's project + resource UUID, but the in-container paths and our backup procedures (see [docs/operations/backup-restore.md](https://github.com/HameemDakheel/obstack/blob/main/docs/operations/backup-restore.md)) work the same.
 
 ## TLS
 
-Coolify's reverse proxy (Traefik or Caddy depending on your Coolify version) terminates TLS for the Grafana service automatically. The OTel-jps Caddy in the compose file handles TLS only for the OTLP gRPC port `:4317`, which Coolify exposes raw on the host port.
+Coolify's reverse proxy (Traefik or Caddy depending on your Coolify version) terminates TLS for the Grafana service automatically. The obstack Caddy in the compose file handles TLS only for the OTLP gRPC port `:4317`, which Coolify exposes raw on the host port.
 
 If you want TLS on `:4317` too, configure Coolify to add a TCP service entry, or front the gRPC port with another Coolify-managed reverse proxy that handles HTTP/2.
 
@@ -46,6 +46,6 @@ Coolify exposes "Pull latest images and restart" in the resource UI. That's equi
 
 ## See also
 
-- [Coolify deployment guide](https://github.com/HameemDakheel/OTel-jps/blob/main/docs/deployment/coolify.md) — full step-by-step
+- [Coolify deployment guide](https://github.com/HameemDakheel/obstack/blob/main/docs/deployment/coolify.md) — full step-by-step
 - [Coolify documentation](https://coolify.io/docs/) — Coolify itself
-- [Architecture](https://github.com/HameemDakheel/OTel-jps/blob/main/docs/architecture.md) — what's inside the stack
+- [Architecture](https://github.com/HameemDakheel/obstack/blob/main/docs/architecture.md) — what's inside the stack

@@ -1,6 +1,6 @@
 # Go instrumentation
 
-> **What you'll need:** Go 1.21+, an OTel-jps stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
+> **What you'll need:** Go 1.21+, an obstack stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
 > **Time to complete:** ~15 minutes (Go has no SDK-level auto-instrumentation; you wire the SDK manually).
 
 Go does **not** have language-runtime auto-instrumentation in the way Node/Python/Java do — you set up the SDK explicitly and use middleware libraries (`otelhttp`, `otelgin`, `otelgorm`, etc.) for popular frameworks.

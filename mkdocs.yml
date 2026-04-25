@@ -1,8 +1,8 @@
-site_name: OTel-jps
+site_name: obstack
 site_description: Production observability for your $20/month VPS — all 5 signals, one command
-site_url: https://otel-jps.dev
-repo_url: https://github.com/HameemDakheel/OTel-jps
-repo_name: HameemDakheel/OTel-jps
+site_url: https://obstack.dev
+repo_url: https://github.com/HameemDakheel/obstack
+repo_name: HameemDakheel/obstack
 edit_uri: edit/main/docs/
 docs_dir: docs
 exclude_docs: |

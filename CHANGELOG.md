@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to OTel-jps are documented in this file.
+All notable changes to obstack are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
@@ -8,10 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+- **Project renamed from `OTel-jps` to `obstack`.** GitHub repo renamed via `gh repo rename obstack`; auto-redirect from old URLs is in place. All in-repo references (~70 files) updated: README, CHANGELOG, all docs, all templates (Coolify/Dokploy/CapRover/Jelastic), launch drafts, MkDocs `site_name`, `site_url`, `repo_url`. Container names also renamed from `otel-jps-<service>` → `obstack-<service>` — running stacks need a one-time `docker rm -f` of the old containers + `make simple` to pick up the new names; volumes (data) preserve cleanly. Spec/plan filenames updated to match (`2026-04-25-obstack-redesign.md`, `2026-04-25-obstack-redesign-INDEX.md`). Local workspace path (`/home/hameem/workspace/OTel-jps`) intentionally left unchanged — it's filesystem-only, not user-facing.
+
 ### Planned
 - Real screenshots in README and docs (manual capture post-launch)
 - First push of `v1.0.0` tag to origin
-- Submission of OTel-jps templates to Coolify Templates / Dokploy Templates / CapRover One-Click Apps registries
+- Submission of obstack templates to Coolify Templates / Dokploy Templates / CapRover One-Click Apps registries
 
 ---
 
@@ -81,7 +84,7 @@ The first production release. Combines the work from all alpha milestones (`alph
 
 ### Added
 - `cadvisor` service — per-container CPU/RAM/network metrics, scraped by Prometheus.
-- 4 default Grafana dashboards in `configs/grafana/dashboards/`: Stack Health, Container Metrics, Logs Explorer, Traces Browser. Auto-provisioned into the "OTel-jps" folder.
+- 4 default Grafana dashboards in `configs/grafana/dashboards/`: Stack Health, Container Metrics, Logs Explorer, Traces Browser. Auto-provisioned into the "obstack" folder.
 - 12 default Prometheus alert rules in `alerts/default-rules.yaml` covering service down, high error rate, cardinality explosion, disk usage, and more.
 - Grafana alerting provisioning: contact point + notification policy (`configs/grafana/provisioning/alerting/`).
 - `compose/otel-demo.yml` — opt-in OTel demo overlay (curated 7-service Astronomy Shop subset) for evaluation and screenshots.
@@ -91,7 +94,7 @@ The first production release. Combines the work from all alpha milestones (`alph
 
 ### Changed
 - `Makefile`: `make simple` now prints the Grafana URL hint after starting.
-- `configs/grafana/provisioning/dashboards/dashboards.yaml`: `foldersFromFilesStructure` set to `false` so the named "OTel-jps" folder takes effect (was previously `true`, which silently overrode the named folder).
+- `configs/grafana/provisioning/dashboards/dashboards.yaml`: `foldersFromFilesStructure` set to `false` so the named "obstack" folder takes effect (was previously `true`, which silently overrode the named folder).
 
 ### Fixed
 - Removed misleading `wget` healthchecks for distroless containers (Caddy, OTel Collector, VictoriaLogs, Pyroscope) — they showed `(unhealthy)` in `docker compose ps` even when services were working. Healthcheck-as-truth replaced by `verify_stack.sh` probing through the Caddy container.
@@ -138,16 +141,16 @@ The first production release. Combines the work from all alpha milestones (`alph
 
 ## Versioning
 
-OTel-jps follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html):
+obstack follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html):
 - **Major** version (`v2.0.0`) — breaking changes (e.g. config format change, removed component).
 - **Minor** version (`v1.1.0`) — new features (e.g. new profile, new dashboard, new alert).
 - **Patch** version (`v1.0.1`) — bug fixes.
 
 Pre-release versions (`v1.0.0-alpha.N`) are used during phased development. Once `v1.0.0` ships, alphas end.
 
-[Unreleased]: https://github.com/HameemDakheel/OTel-jps/compare/v1.0.0...HEAD
-[v1.0.0]: https://github.com/HameemDakheel/OTel-jps/releases/tag/v1.0.0
-[v1.0.0-alpha.4]: https://github.com/HameemDakheel/OTel-jps/releases/tag/v1.0.0-alpha.4
-[v1.0.0-alpha.3]: https://github.com/HameemDakheel/OTel-jps/releases/tag/v1.0.0-alpha.3
-[v1.0.0-alpha.2]: https://github.com/HameemDakheel/OTel-jps/releases/tag/v1.0.0-alpha.2
-[v1.0.0-alpha.1]: https://github.com/HameemDakheel/OTel-jps/releases/tag/v1.0.0-alpha.1
+[Unreleased]: https://github.com/HameemDakheel/obstack/compare/v1.0.0...HEAD
+[v1.0.0]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0
+[v1.0.0-alpha.4]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0-alpha.4
+[v1.0.0-alpha.3]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0-alpha.3
+[v1.0.0-alpha.2]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0-alpha.2
+[v1.0.0-alpha.1]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0-alpha.1

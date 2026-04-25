@@ -34,7 +34,7 @@ In Dokploy:
 1. Go to your project → **+ Create Service**.
 2. Choose **Compose**.
 3. Pick the **Custom Template** option.
-4. Paste the contents of [`templates/dokploy/template.json`](https://github.com/HameemDakheel/OTel-jps/blob/main/templates/dokploy/template.json).
+4. Paste the contents of [`templates/dokploy/template.json`](https://github.com/HameemDakheel/obstack/blob/main/templates/dokploy/template.json).
 5. Dokploy parses the env-var prompts and walks you through them:
    - `DOMAIN` — your real domain (Caddy will issue Let's Encrypt for it).
    - `ACME_EMAIL` — your contact email.
@@ -56,7 +56,7 @@ SSH into the Dokploy host:
 ```bash
 ssh <dokploy-host>
 cd /etc/dokploy/<project-name>/files/
-sudo git clone --branch v1.0.0-alpha.4 https://github.com/HameemDakheel/OTel-jps.git tmp
+sudo git clone --branch v1.0.0-alpha.4 https://github.com/HameemDakheel/obstack.git tmp
 sudo cp tmp/configs/caddy/Caddyfile ./
 sudo cp tmp/configs/otel-collector/config.yaml ./otel-collector-config.yaml
 sudo cp tmp/configs/prometheus/prometheus.yml ./
@@ -88,7 +88,7 @@ Click **Deploy** in the Dokploy service UI. Dokploy:
 
 Open `https://<DOMAIN>/` in your browser. Login: `admin` / value of the auto-generated `GRAFANA_ADMIN_PASSWORD` (visible in Dokploy's env-vars tab).
 
-Check the 4 dashboards in the OTel-jps folder.
+Check the 4 dashboards in the obstack folder.
 
 ---
 
@@ -126,7 +126,7 @@ Per-language examples: [instrumentation guides](../instrumentation/nodejs.md).
 | View logs | Dokploy service → **Logs** tab (live tail) |
 | Adjust retention | Update env vars → **Restart** |
 | Backups | Dokploy's Backups feature on each volume |
-| Upgrade OTel-jps version | Pull updated `template.json` from the repo, redeploy |
+| Upgrade obstack version | Pull updated `template.json` from the repo, redeploy |
 
 ---
 
@@ -144,4 +144,4 @@ Per-language examples: [instrumentation guides](../instrumentation/nodejs.md).
 - [Quickstart](../quickstart.md)
 - [Architecture](../architecture.md)
 - [Dokploy documentation](https://docs.dokploy.com)
-- [Dokploy template README](https://github.com/HameemDakheel/OTel-jps/blob/main/templates/dokploy/README.md)
+- [Dokploy template README](https://github.com/HameemDakheel/obstack/blob/main/templates/dokploy/README.md)

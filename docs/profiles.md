@@ -2,7 +2,7 @@
 
 > **Audience:** anyone deciding which profile to deploy or planning to scale up. Read after [Architecture](architecture.md).
 
-OTel-jps ships as one product with four profiles — different tunings of the same components for different deployment shapes. You pick what your machine and team can operate today. You can switch profiles later.
+obstack ships as one product with four profiles — different tunings of the same components for different deployment shapes. You pick what your machine and team can operate today. You can switch profiles later.
 
 ---
 
@@ -176,7 +176,7 @@ make demo
 
 The demo overlay is **not** a profile — it doesn't change the stack's resource shape, just adds extra application containers on top. It needs ~4 GB extra RAM, so on a 4 GB Simple-profile VPS you'll OOM. Use a bigger machine for evaluation/demo work.
 
-See the [Demo overlay README](https://github.com/HameemDakheel/OTel-jps/blob/main/demo/README.md) for full details.
+See the [Demo overlay README](https://github.com/HameemDakheel/obstack/blob/main/demo/README.md) for full details.
 
 ---
 

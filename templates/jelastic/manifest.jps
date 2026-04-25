@@ -1,12 +1,12 @@
 {
   "jpsType": "install",
   "jpsVersion": "1.7",
-  "name": "OTel-jps — Production observability for your $20/month VPS",
-  "id": "otel-jps",
+  "name": "obstack — Production observability for your $20/month VPS",
+  "id": "obstack",
   "version": "1.0.0-alpha.4",
-  "logo": "https://raw.githubusercontent.com/HameemDakheel/OTel-jps/main/assets/logo.png",
+  "logo": "https://raw.githubusercontent.com/HameemDakheel/obstack/main/assets/logo.png",
   "description": "OpenTelemetry-native observability stack: Prometheus, VictoriaLogs, Tempo, Pyroscope, Grafana, OTel Collector, Caddy. ~310 MB idle. All 5 signals on a 4 GB VPS.",
-  "homepage": "https://github.com/HameemDakheel/OTel-jps",
+  "homepage": "https://github.com/HameemDakheel/obstack",
 
   "categories": ["apps/observability", "apps/monitoring"],
 
@@ -14,8 +14,8 @@
     "GRAFANA_PW": "${fn.password(16)}",
     "BASIC_AUTH_USER": "ingest",
     "BASIC_AUTH_PW": "${fn.password(24)}",
-    "STACK_PATH": "/opt/otel-jps",
-    "REPO_URL": "${settings.repoUrl:https://github.com/HameemDakheel/OTel-jps.git}",
+    "STACK_PATH": "/opt/obstack",
+    "REPO_URL": "${settings.repoUrl:https://github.com/HameemDakheel/obstack.git}",
     "REPO_REF": "${settings.repoRef:v1.0.0-alpha.4}"
   },
 
@@ -25,7 +25,7 @@
         "name": "repoUrl",
         "caption": "Git repository URL",
         "type": "string",
-        "default": "https://github.com/HameemDakheel/OTel-jps.git",
+        "default": "https://github.com/HameemDakheel/obstack.git",
         "required": true
       },
       {
@@ -39,7 +39,7 @@
         "name": "envName",
         "caption": "Environment name",
         "type": "string",
-        "default": "otel-jps",
+        "default": "obstack",
         "required": true
       },
       {
@@ -56,7 +56,7 @@
     {
       "nodeType": "dockerengine",
       "nodeGroup": "cp",
-      "displayName": "OTel-jps stack",
+      "displayName": "obstack stack",
       "count": 1,
       "cloudlets": 24,
       "fixedCloudlets": 4,
@@ -117,7 +117,7 @@
         "sleep 45",
         "cd ${globals.STACK_PATH} && docker compose -f docker-compose.yml -f compose/simple.yml ps",
         "cd ${globals.STACK_PATH} && ./scripts/verify_stack.sh || (echo 'Verification failed; see logs above' && exit 1)",
-        "echo 'OTel-jps deployment complete!'"
+        "echo 'obstack deployment complete!'"
       ]
     },
 
@@ -163,7 +163,7 @@
   },
 
   "success": {
-    "text": "## OTel-jps is ready\n\n### Open Grafana\n- **URL**: https://${env.domain}\n- **User**: `admin`\n- **Password**: `${globals.GRAFANA_PW}`\n\n### Send telemetry from your apps\n\n- **OTLP HTTP**: `https://${env.domain}/v1/{traces,metrics,logs}`\n- **OTLP gRPC**: `${env.domain}:4317`\n\nAuthentication (HTTP Basic):\n- **Username**: `${globals.BASIC_AUTH_USER}`\n- **Password**: `${globals.BASIC_AUTH_PW}`\n\nFor SDK env vars:\n```\nOTEL_EXPORTER_OTLP_ENDPOINT=https://${env.domain}\nOTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf\nOTEL_EXPORTER_OTLP_HEADERS=authorization=Basic <base64('${globals.BASIC_AUTH_USER}:${globals.BASIC_AUTH_PW}')>\n```\n\n### Next steps\n- Browse the 4 pre-built dashboards in Grafana → **OTel-jps** folder\n- Read the [Quickstart](https://github.com/HameemDakheel/OTel-jps/blob/main/docs/quickstart.md) and [instrumentation guides](https://github.com/HameemDakheel/OTel-jps/tree/main/docs/instrumentation)\n- Use the **Connect to OTel-jps** add-on (linker.jps) to auto-configure other Jelastic apps to send telemetry here.",
-    "email": "## OTel-jps Deployed\n\n**Grafana**: https://${env.domain}\n- User: `admin` / Pass: `${globals.GRAFANA_PW}`\n\n**OTLP ingestion**: https://${env.domain}/v1/...\n- User: `${globals.BASIC_AUTH_USER}` / Pass: `${globals.BASIC_AUTH_PW}`"
+    "text": "## obstack is ready\n\n### Open Grafana\n- **URL**: https://${env.domain}\n- **User**: `admin`\n- **Password**: `${globals.GRAFANA_PW}`\n\n### Send telemetry from your apps\n\n- **OTLP HTTP**: `https://${env.domain}/v1/{traces,metrics,logs}`\n- **OTLP gRPC**: `${env.domain}:4317`\n\nAuthentication (HTTP Basic):\n- **Username**: `${globals.BASIC_AUTH_USER}`\n- **Password**: `${globals.BASIC_AUTH_PW}`\n\nFor SDK env vars:\n```\nOTEL_EXPORTER_OTLP_ENDPOINT=https://${env.domain}\nOTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf\nOTEL_EXPORTER_OTLP_HEADERS=authorization=Basic <base64('${globals.BASIC_AUTH_USER}:${globals.BASIC_AUTH_PW}')>\n```\n\n### Next steps\n- Browse the 4 pre-built dashboards in Grafana → **obstack** folder\n- Read the [Quickstart](https://github.com/HameemDakheel/obstack/blob/main/docs/quickstart.md) and [instrumentation guides](https://github.com/HameemDakheel/obstack/tree/main/docs/instrumentation)\n- Use the **Connect to obstack** add-on (linker.jps) to auto-configure other Jelastic apps to send telemetry here.",
+    "email": "## obstack Deployed\n\n**Grafana**: https://${env.domain}\n- User: `admin` / Pass: `${globals.GRAFANA_PW}`\n\n**OTLP ingestion**: https://${env.domain}/v1/...\n- User: `${globals.BASIC_AUTH_USER}` / Pass: `${globals.BASIC_AUTH_PW}`"
   }
 }

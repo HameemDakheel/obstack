@@ -6,7 +6,7 @@
 
 ## Tweet 1 (anchor)
 
-🔭 Just shipped OTel-jps v1.0.0 — production observability for your $20/month VPS.
+🔭 Just shipped obstack v1.0.0 — production observability for your $20/month VPS.
 
 All 5 OpenTelemetry signals (logs, metrics, traces, profiles, dashboards) running on 8 containers in **311 MB of RAM**.
 
@@ -14,7 +14,7 @@ One command. MIT-licensed.
 
 🧵👇
 
-[Image: hero screenshot of Grafana with the 4 OTel-jps dashboards in the sidebar, populated with live data]
+[Image: hero screenshot of Grafana with the 4 obstack dashboards in the sidebar, populated with live data]
 
 ---
 
@@ -88,8 +88,8 @@ When someone forks this 6 months from now, the *why* is right there.
 
 ## Tweet 7 (CTA)
 
-🔗 Repo: https://github.com/HameemDakheel/OTel-jps
-📚 Quickstart: https://github.com/HameemDakheel/OTel-jps/blob/main/docs/quickstart.md
+🔗 Repo: https://github.com/HameemDakheel/obstack
+📚 Quickstart: https://github.com/HameemDakheel/obstack/blob/main/docs/quickstart.md
 💬 Show HN: [LINK TO HN POST]
 
 If you're paying Datadog more than you're paying for AWS — this is for you.
@@ -102,6 +102,6 @@ If you're paying Datadog more than you're paying for AWS — this is for you.
 
 - Replace `[LINK TO HN POST]` after submitting to HN.
 - Add the screenshots referenced in Tweets 1 and 4 — both 1600×900, dark mode if Grafana looks better that way.
-- Don't quote-tweet other people's projects in this thread — keep it focused on OTel-jps.
+- Don't quote-tweet other people's projects in this thread — keep it focused on obstack.
 - Pin Tweet 1 to your profile for ~7 days post-launch.
 - For LinkedIn / Mastodon: paraphrase but link to the same repo and quickstart. Don't repost Twitter verbatim.

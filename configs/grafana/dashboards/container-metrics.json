@@ -1,7 +1,7 @@
 {
-  "title": "OTel-jps · Container Metrics",
-  "uid": "otel-jps-container-metrics",
-  "tags": ["otel-jps", "containers", "cadvisor"],
+  "title": "obstack · Container Metrics",
+  "uid": "obstack-container-metrics",
+  "tags": ["obstack", "containers", "cadvisor"],
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 1,
@@ -15,7 +15,7 @@
       "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
       "datasource": { "uid": "prometheus", "type": "prometheus" },
       "targets": [{
-        "expr": "rate(container_cpu_usage_seconds_total{name=~\"otel-jps-.*\"}[1m])",
+        "expr": "rate(container_cpu_usage_seconds_total{name=~\"obstack-.*\"}[1m])",
         "legendFormat": "{{name}}",
         "refId": "A"
       }],
@@ -28,7 +28,7 @@
       "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
       "datasource": { "uid": "prometheus", "type": "prometheus" },
       "targets": [{
-        "expr": "container_memory_usage_bytes{name=~\"otel-jps-.*\"} / 1024 / 1024",
+        "expr": "container_memory_usage_bytes{name=~\"obstack-.*\"} / 1024 / 1024",
         "legendFormat": "{{name}}",
         "refId": "A"
       }],
@@ -41,7 +41,7 @@
       "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
       "datasource": { "uid": "prometheus", "type": "prometheus" },
       "targets": [{
-        "expr": "rate(container_network_receive_bytes_total{name=~\"otel-jps-.*\"}[1m])",
+        "expr": "rate(container_network_receive_bytes_total{name=~\"obstack-.*\"}[1m])",
         "legendFormat": "{{name}}",
         "refId": "A"
       }],
@@ -54,7 +54,7 @@
       "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
       "datasource": { "uid": "prometheus", "type": "prometheus" },
       "targets": [{
-        "expr": "rate(container_network_transmit_bytes_total{name=~\"otel-jps-.*\"}[1m])",
+        "expr": "rate(container_network_transmit_bytes_total{name=~\"obstack-.*\"}[1m])",
         "legendFormat": "{{name}}",
         "refId": "A"
       }],

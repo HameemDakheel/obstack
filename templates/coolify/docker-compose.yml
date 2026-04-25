@@ -1,4 +1,4 @@
-# OTel-jps Coolify-tuned compose.
+# obstack Coolify-tuned compose.
 # Differences from the base docker-compose.yml + compose/simple.yml:
 #   - Uses ${SERVICE_FQDN_GRAFANA} so Coolify auto-issues a domain + Let's Encrypt cert.
 #   - No `expose` for Caddy ports 80/443 — Coolify's own proxy handles that for the
@@ -8,7 +8,7 @@
 services:
   caddy:
     image: caddy:2-alpine
-    container_name: otel-jps-caddy
+    container_name: obstack-caddy
     restart: unless-stopped
     ports:
       - "${PORT_OTLP_GRPC:-4317}:4317"
@@ -35,7 +35,7 @@ services:
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.111.0
-    container_name: otel-jps-otelcol
+    container_name: obstack-otelcol
     restart: unless-stopped
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     volumes:
@@ -62,7 +62,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v3.0.1
-    container_name: otel-jps-prometheus
+    container_name: obstack-prometheus
     restart: unless-stopped
     command:
       - --config.file=/etc/prometheus/prometheus.yml
@@ -87,7 +87,7 @@ services:
 
   victorialogs:
     image: victoriametrics/victoria-logs:v1.1.0-victorialogs
-    container_name: otel-jps-victorialogs
+    container_name: obstack-victorialogs
     restart: unless-stopped
     command:
       - --storageDataPath=/vlogs
@@ -106,7 +106,7 @@ services:
 
   tempo:
     image: grafana/tempo:2.6.1
-    container_name: otel-jps-tempo
+    container_name: obstack-tempo
     restart: unless-stopped
     command:
       - -config.file=/etc/tempo/tempo.yaml
@@ -133,7 +133,7 @@ services:
 
   pyroscope:
     image: grafana/pyroscope:1.10.0
-    container_name: otel-jps-pyroscope
+    container_name: obstack-pyroscope
     restart: unless-stopped
     command: ["-config.file=/etc/pyroscope/pyroscope.yaml"]
     volumes:
@@ -153,7 +153,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.3.0
-    container_name: otel-jps-grafana
+    container_name: obstack-grafana
     restart: unless-stopped
     volumes:
       - type: bind
@@ -185,7 +185,7 @@ services:
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
-    container_name: otel-jps-cadvisor
+    container_name: obstack-cadvisor
     restart: unless-stopped
     privileged: true
     devices:

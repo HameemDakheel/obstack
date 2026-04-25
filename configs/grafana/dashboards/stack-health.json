@@ -1,7 +1,7 @@
 {
-  "title": "OTel-jps · Stack Health",
-  "uid": "otel-jps-stack-health",
-  "tags": ["otel-jps", "health"],
+  "title": "obstack · Stack Health",
+  "uid": "obstack-stack-health",
+  "tags": ["obstack", "health"],
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 1,

@@ -1,4 +1,4 @@
-# OTel-jps base compose file.
+# obstack base compose file.
 # This file declares networks and volumes; services are layered in by `compose/<profile>.yml`.
 # Run with: docker compose -f docker-compose.yml -f compose/simple.yml up -d
 # Or via:    make simple
@@ -20,7 +20,7 @@ volumes:
 services:
   caddy:
     image: caddy:2-alpine
-    container_name: otel-jps-caddy
+    container_name: obstack-caddy
     restart: unless-stopped
     networks:
       - obs-net
@@ -45,7 +45,7 @@ services:
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.111.0
-    container_name: otel-jps-otelcol
+    container_name: obstack-otelcol
     restart: unless-stopped
     networks:
       - obs-net
@@ -69,7 +69,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v3.0.1
-    container_name: otel-jps-prometheus
+    container_name: obstack-prometheus
     restart: unless-stopped
     networks:
       - obs-net
@@ -93,7 +93,7 @@ services:
 
   victorialogs:
     image: victoriametrics/victoria-logs:v1.1.0-victorialogs
-    container_name: otel-jps-victorialogs
+    container_name: obstack-victorialogs
     restart: unless-stopped
     networks:
       - obs-net
@@ -109,7 +109,7 @@ services:
 
   tempo:
     image: grafana/tempo:2.6.1
-    container_name: otel-jps-tempo
+    container_name: obstack-tempo
     restart: unless-stopped
     networks:
       - obs-net
@@ -134,7 +134,7 @@ services:
 
   pyroscope:
     image: grafana/pyroscope:1.10.0
-    container_name: otel-jps-pyroscope
+    container_name: obstack-pyroscope
     restart: unless-stopped
     networks:
       - obs-net
@@ -149,7 +149,7 @@ services:
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
-    container_name: otel-jps-cadvisor
+    container_name: obstack-cadvisor
     restart: unless-stopped
     networks:
       - obs-net
@@ -172,7 +172,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.3.0
-    container_name: otel-jps-grafana
+    container_name: obstack-grafana
     restart: unless-stopped
     networks:
       - obs-net

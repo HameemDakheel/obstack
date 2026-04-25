@@ -3,7 +3,7 @@
 > **What you'll need:** a working CapRover ≥ 1.13 instance, a wildcard subdomain pointed at the host (`*.example.com`), a basic-auth bcrypt hash you'll generate in Step 2.
 > **Time to complete:** ~15 minutes (more setup than Coolify/Dokploy because CapRover deploys each service as its own app).
 
-[CapRover](https://caprover.com) is a self-hosted, multi-app PaaS with an opinionated "one-click apps" pattern. Multi-service stacks like OTel-jps map to CapRover via the One-Click App YAML schema (8 separate CapRover apps that share an internal network).
+[CapRover](https://caprover.com) is a self-hosted, multi-app PaaS with an opinionated "one-click apps" pattern. Multi-service stacks like obstack map to CapRover via the One-Click App YAML schema (8 separate CapRover apps that share an internal network).
 
 ---
 
@@ -33,7 +33,7 @@ In CapRover:
 
 1. Go to **Apps → One-Click Apps/Databases**.
 2. Scroll to the bottom — there's a field for **"Insert any link/yaml here"** for custom apps.
-3. Paste the entire contents of [`templates/caprover/caprover-one-click-app.yml`](https://github.com/HameemDakheel/OTel-jps/blob/main/templates/caprover/caprover-one-click-app.yml).
+3. Paste the entire contents of [`templates/caprover/caprover-one-click-app.yml`](https://github.com/HameemDakheel/obstack/blob/main/templates/caprover/caprover-one-click-app.yml).
 4. Click **Next**.
 5. CapRover prompts for the variables defined in the YAML:
    - `cap_grafana_password` — let CapRover auto-generate (it uses `cap_gen_random_hex(16)` by default).
@@ -76,9 +76,9 @@ Easiest path: SSH into the CapRover host, clone the repo, and copy each file int
 
 ```bash
 ssh <caprover-host>
-sudo git clone --branch v1.0.0-alpha.4 https://github.com/HameemDakheel/OTel-jps.git /tmp/otel-jps
+sudo git clone --branch v1.0.0-alpha.4 https://github.com/HameemDakheel/obstack.git /tmp/obstack
 # For each app:
-sudo cp /tmp/otel-jps/configs/caddy/Caddyfile /captain/data/<app-name-prefix>-caddy/
+sudo cp /tmp/obstack/configs/caddy/Caddyfile /captain/data/<app-name-prefix>-caddy/
 # ... etc
 ```
 
@@ -111,7 +111,7 @@ After editing the configs, restart each affected app from CapRover's dashboard.
 
 Open `https://obs-grafana.<your-caprover-domain>/`. Login with `admin` and the auto-generated password (visible in CapRover's `obs-grafana` app's env-vars).
 
-Check the OTel-jps folder for 4 dashboards.
+Check the obstack folder for 4 dashboards.
 
 ---
 
@@ -156,4 +156,4 @@ Authentication: HTTP Basic with your `BASIC_AUTH_USER` and the plaintext passwor
 - [Quickstart](../quickstart.md)
 - [Architecture](../architecture.md)
 - [CapRover One-Click Apps documentation](https://caprover.com/docs/one-click-apps.html)
-- [CapRover template README](https://github.com/HameemDakheel/OTel-jps/blob/main/templates/caprover/README.md)
+- [CapRover template README](https://github.com/HameemDakheel/obstack/blob/main/templates/caprover/README.md)

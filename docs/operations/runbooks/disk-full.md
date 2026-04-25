@@ -16,7 +16,7 @@
 - Retention configured higher than disk capacity allows.
 - A traffic spike pushed ingestion above the steady-state.
 - Old container images / layers consuming disk.
-- A volume from a previous OTel-jps version not cleaned up.
+- A volume from a previous obstack version not cleaned up.
 
 ## Triage (read-only)
 
@@ -28,7 +28,7 @@ df -h /
 sudo du -sh /var/lib/docker/volumes/* | sort -hr | head -10
 
 # Per-volume usage
-sudo du -sh /var/lib/docker/volumes/otel-jps_*
+sudo du -sh /var/lib/docker/volumes/obstack_*
 
 # Image bloat
 docker system df
@@ -68,7 +68,7 @@ To remove dangling volumes from previous versions:
 
 ```bash
 docker volume ls
-# Delete any without otel-jps_ prefix that you recognise as old
+# Delete any without obstack_ prefix that you recognise as old
 docker volume rm <name>
 ```
 
@@ -82,10 +82,10 @@ make stop
 
 # 2. Mount a bigger disk at /mnt/otel-data
 # 3. Move volume data
-sudo mv /var/lib/docker/volumes/otel-jps_* /mnt/otel-data/
+sudo mv /var/lib/docker/volumes/obstack_* /mnt/otel-data/
 
 # 4. Symlink (or remount Docker's data dir)
-sudo ln -s /mnt/otel-data/otel-jps_* /var/lib/docker/volumes/
+sudo ln -s /mnt/otel-data/obstack_* /var/lib/docker/volumes/
 
 # 5. Restart
 make simple
@@ -103,7 +103,7 @@ df -h /
 ## Prevention
 
 - Match retention to your disk size. Rule of thumb: budget ~1 GB/day per signal at moderate volume.
-- Set up `df` monitoring outside OTel-jps (the alert only fires when you can still query Prometheus).
+- Set up `df` monitoring outside obstack (the alert only fires when you can still query Prometheus).
 - For production, mount a dedicated volume for `/var/lib/docker` with monitoring + extension capability.
 - Phase 2's `DiskUsageHigh` alert needs node_exporter to populate `node_filesystem_*` metrics. If you don't run node_exporter on the host, this alert is silent — add it via `host_metrics` in OTel Collector contrib (Phase 2-tier polish).
 

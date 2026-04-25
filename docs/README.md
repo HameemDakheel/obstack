@@ -1,8 +1,8 @@
-# OTel-jps Documentation
+# obstack Documentation
 
-Welcome. OTel-jps is production observability for your $20/month VPS — all 5 signals, one command.
+Welcome. obstack is production observability for your $20/month VPS — all 5 signals, one command.
 
-If you got here from the repo root, the project [README](https://github.com/HameemDakheel/OTel-jps#readme) has the elevator pitch and quick install. This page is the **docs index** — everything else.
+If you got here from the repo root, the project [README](https://github.com/HameemDakheel/obstack#readme) has the elevator pitch and quick install. This page is the **docs index** — everything else.
 
 ---
 
@@ -60,7 +60,7 @@ If you got here from the repo root, the project [README](https://github.com/Hame
 
 ## Demo
 
-Want to see what the stack looks like with real microservice traces flowing through it? See the [Demo overlay](https://github.com/HameemDakheel/OTel-jps/blob/main/demo/README.md). One command:
+Want to see what the stack looks like with real microservice traces flowing through it? See the [Demo overlay](https://github.com/HameemDakheel/obstack/blob/main/demo/README.md). One command:
 
 ```bash
 make demo
@@ -72,14 +72,14 @@ make demo
 
 ## Contributing
 
-OTel-jps is MIT-licensed and accepts contributions. Common ways to help:
+obstack is MIT-licensed and accepts contributions. Common ways to help:
 
 - File issues for bugs you hit
 - Send PRs for documentation improvements (typos, clarifications, missing examples)
 - Share your dashboards via PR (drop a JSON into `configs/grafana/dashboards/`)
 - Suggest alert rules via PR (add to `alerts/`)
 
-Repo: <https://github.com/HameemDakheel/OTel-jps>
+Repo: <https://github.com/HameemDakheel/obstack>
 
 ---
 
@@ -88,4 +88,4 @@ Repo: <https://github.com/HameemDakheel/OTel-jps>
 - **Phase 4** — PaaS one-click templates (Coolify, Dokploy, CapRover, Jelastic) + per-PaaS deployment guides.
 - **Phase 5** — CI/CD pipeline, polished README, screenshots, `v1.0.0` release.
 
-See the [Phase index](superpowers/plans/2026-04-25-otel-jps-redesign-INDEX.md) for the full plan.
+See the [Phase index](superpowers/plans/2026-04-25-obstack-redesign-INDEX.md) for the full plan.

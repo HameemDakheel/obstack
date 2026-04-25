@@ -1,6 +1,6 @@
 # Java instrumentation
 
-> **What you'll need:** JDK 17+, an OTel-jps stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
+> **What you'll need:** JDK 17+, an obstack stack reachable at `https://<DOMAIN>/`, and the basic-auth credentials from your `.env`.
 > **Time to complete:** ~5 minutes (Java has the best auto-instrumentation story — a single javaagent JAR covers ~100 frameworks).
 
 The OpenTelemetry Java agent is a **single JAR** you attach via `-javaagent`. It auto-instruments Spring, Hibernate, JDBC, Kafka, Vert.x, Micrometer, Apache HTTP, Netty, and ~90 other libraries with **zero code changes**.
@@ -57,7 +57,7 @@ That's it. Spring controllers become traces. JDBC queries become child spans. JV
 
 Open Grafana → **Explore** → datasource: **Tempo** → "Search" tab → service: `my-java-app`. Hit your app's HTTP endpoints and check the traces appear within ~10 seconds.
 
-JVM metrics appear in **Dashboards → OTel-jps → Stack Health** (and you can search Prometheus for `process_runtime_jvm_*`). For richer JVM dashboards, install the [OpenTelemetry JVM Metrics dashboard](https://grafana.com/grafana/dashboards/19004) from grafana.com (Phase 5 work — not pre-bundled).
+JVM metrics appear in **Dashboards → obstack → Stack Health** (and you can search Prometheus for `process_runtime_jvm_*`). For richer JVM dashboards, install the [OpenTelemetry JVM Metrics dashboard](https://grafana.com/grafana/dashboards/19004) from grafana.com (Phase 5 work — not pre-bundled).
 
 ---
 
