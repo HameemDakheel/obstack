@@ -2,7 +2,9 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Stars](https://img.shields.io/github/stars/HameemDakheel/OTel-jps?style=social)](https://github.com/HameemDakheel/OTel-jps/stargazers)
-[![v1.0.0-alpha.3](https://img.shields.io/badge/version-v1.0.0--alpha.3-blue)](https://github.com/HameemDakheel/OTel-jps/releases)
+[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/HameemDakheel/OTel-jps/releases)
+[![Validate](https://github.com/HameemDakheel/OTel-jps/actions/workflows/validate.yml/badge.svg)](https://github.com/HameemDakheel/OTel-jps/actions/workflows/validate.yml)
+[![Docs](https://github.com/HameemDakheel/OTel-jps/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/HameemDakheel/OTel-jps/actions/workflows/deploy-docs.yml)
 
 > **Production observability for your $20/month VPS.** All 5 signals (logs, metrics, traces, profiles, dashboards). One command. No headache.
 
@@ -154,6 +156,24 @@ OTel-jps is MIT-licensed and accepts contributions. Common ways to help:
 - Suggest alert rules via PR (add to `alerts/`)
 
 For larger contributions, please open an issue first to discuss the approach.
+
+---
+
+## Acknowledgements
+
+OTel-jps stands on the shoulders of giants. We don't reinvent storage, query engines, or visualisation — we assemble a polished, resource-frugal product from existing best-of-breed open-source components:
+
+- **[OpenTelemetry](https://opentelemetry.io/)** — the standard we ingest, the protocol we speak.
+- **[Grafana](https://grafana.com/)** — the visual moat. Plus Tempo and Pyroscope come from the Grafana ecosystem.
+- **[VictoriaMetrics](https://victoriametrics.com/)** — VictoriaLogs makes the "fits on 4 GB" pitch honest.
+- **[Prometheus](https://prometheus.io/)** — the metrics standard, used by everyone for a reason.
+- **[Caddy](https://caddyserver.com/)** — auto-TLS that "just works."
+- **[cAdvisor](https://github.com/google/cadvisor)** — container metrics with no fuss.
+- **[Coolify](https://coolify.io)**, **[Dokploy](https://dokploy.com)**, **[CapRover](https://caprover.com)**, and the **Jelastic** ecosystem — the PaaS platforms our beachhead audience runs.
+- **[Keep a Changelog](https://keepachangelog.com)** — for the format of our `CHANGELOG.md`.
+- **[MkDocs Material](https://squidfunk.github.io/mkdocs-material/)** — the documentation site theme.
+
+If we missed crediting your work, please open an issue.
 
 ---
 
