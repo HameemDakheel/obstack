@@ -26,3 +26,11 @@ services:
           memory: 384M
         reservations:
           memory: 128M
+
+  victorialogs:
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 64M

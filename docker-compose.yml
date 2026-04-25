@@ -85,3 +85,24 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+
+  victorialogs:
+    image: victoriametrics/victoria-logs:v1.1.0-victorialogs
+    container_name: otel-jps-victorialogs
+    restart: unless-stopped
+    networks:
+      - obs-net
+    command:
+      - --storageDataPath=/vlogs
+      - --retentionPeriod=${VICTORIALOGS_RETENTION:-7d}
+      - --httpListenAddr=0.0.0.0:9428
+      - --loggerLevel=INFO
+    volumes:
+      - victorialogs_data:/vlogs
+    expose:
+      - "9428"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9428/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
