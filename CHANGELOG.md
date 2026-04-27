@@ -8,13 +8,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-### Changed
-- **Project renamed from `OTel-jps` to `obstack`.** GitHub repo renamed via `gh repo rename obstack`; auto-redirect from old URLs is in place. All in-repo references (~70 files) updated: README, CHANGELOG, all docs, all templates (Coolify/Dokploy/CapRover/Jelastic), launch drafts, MkDocs `site_name`, `site_url`, `repo_url`. Container names also renamed from `otel-jps-<service>` → `obstack-<service>` — running stacks need a one-time `docker rm -f` of the old containers + `make simple` to pick up the new names; volumes (data) preserve cleanly. Spec/plan filenames updated to match (`2026-04-25-obstack-redesign.md`, `2026-04-25-obstack-redesign-INDEX.md`). Local workspace path (`/home/hameem/workspace/OTel-jps`) intentionally left unchanged — it's filesystem-only, not user-facing.
-
 ### Planned
 - Real screenshots in README and docs (manual capture post-launch)
-- First push of `v1.0.0` tag to origin
+- First push of release tags to origin
 - Submission of obstack templates to Coolify Templates / Dokploy Templates / CapRover One-Click Apps registries
+- v1.1.0 — Standard profile, host metrics, opinionated alert packs (Postgres/Nginx/Redis/host), demo redesign as standalone external client
+
+---
+
+## [v1.0.1] — 2026-04-27
+
+The rename release. No functional changes for Simple-profile users beyond the project identifier; one breaking change in container names.
+
+### Changed
+- **Project renamed from `OTel-jps` to `obstack`.** GitHub repo renamed via `gh repo rename obstack`; auto-redirect from old URLs is in place. All in-repo references (~70 files) updated: README, CHANGELOG, all docs, all templates (Coolify/Dokploy/CapRover/Jelastic), launch drafts, MkDocs `site_name`, `site_url`, `repo_url`. Spec/plan filenames updated to match (`2026-04-25-obstack-redesign.md`, `2026-04-25-obstack-redesign-INDEX.md`). Local workspace path on the maintainer's machine (`/home/hameem/workspace/OTel-jps`) intentionally left unchanged — it's filesystem-only, not user-facing.
+
+### Breaking
+- **Container names changed** from `otel-jps-<service>` → `obstack-<service>`. Existing v1.0.0 deployments need a one-time migration: `docker rm -f $(docker ps -a --filter 'name=otel-jps-' -q)` followed by `make simple`. **Volumes (data) are preserved** because volume names did not change.
 
 ---
 
@@ -148,7 +158,8 @@ obstack follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
 
 Pre-release versions (`v1.0.0-alpha.N`) are used during phased development. Once `v1.0.0` ships, alphas end.
 
-[Unreleased]: https://github.com/HameemDakheel/obstack/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/HameemDakheel/obstack/compare/v1.0.1...HEAD
+[v1.0.1]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.1
 [v1.0.0]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0
 [v1.0.0-alpha.4]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0-alpha.4
 [v1.0.0-alpha.3]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0-alpha.3
