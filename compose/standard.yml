@@ -1,5 +1,69 @@
-# Standard profile overlay (placeholder — ships in v1.1).
-# Targets: small team, single beefy server (~8 GB RAM).
-# Currently contains no service blocks; use compose/simple.yml until v1.1 ships.
+# Standard profile overlay (v1.1).
+# Targets: small team / single beefy server (~8 GB RAM, 30-day retention).
+# Apply with: docker compose -f docker-compose.yml -f compose/standard.yml up -d
+# Or via:    make standard
 
-services: {}
+services:
+  caddy:
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 32M
+
+  otel-collector:
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+        reservations:
+          memory: 128M
+
+  prometheus:
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+        reservations:
+          memory: 256M
+
+  victorialogs:
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+        reservations:
+          memory: 96M
+
+  tempo:
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+        reservations:
+          memory: 256M
+
+  pyroscope:
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 192M
+
+  grafana:
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+        reservations:
+          memory: 128M
+
+  cadvisor:
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 32M
