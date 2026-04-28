@@ -130,6 +130,26 @@ This is overkill for most self-hosters but recommended for compliance-sensitive 
 
 ---
 
+## Profile upgrade: Simple → Standard
+
+Standard uses the same components as Simple — only resource limits and retention differ. Volumes (data) carry over unchanged.
+
+```bash
+# 1. Stop Simple stack (data preserved in named volumes).
+make stop
+
+# 2. Optionally edit .env to bump retention to Standard defaults
+#    (uncomment the PROMETHEUS_RETENTION=30d block etc.).
+
+# 3. Start Standard.
+make standard
+make standard-verify
+```
+
+The whole procedure is ~30 seconds. No data migration. No re-instrumentation of your apps. Same OTLP endpoint.
+
+---
+
 ## See also
 
 - [Backup & Restore](backup-restore.md)

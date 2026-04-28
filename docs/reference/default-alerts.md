@@ -25,6 +25,28 @@ obstack ships with 12 pre-tuned alerts covering the most common production failu
 
 ---
 
+## Optional alert packs
+
+Extra alert rules ship as drop-in YAML files in `alerts/optional/`. They are not loaded by default — copy the file you want into `alerts/` and restart Prometheus.
+
+| Pack | File | Requires |
+|------|------|----------|
+| Postgres | `alerts/optional/postgres.yaml` | `prometheus-postgres-exporter` scraping your DB |
+| Nginx | `alerts/optional/nginx.yaml` | `nginx-prometheus-exporter` |
+| Redis | `alerts/optional/redis.yaml` | `redis_exporter` (oliver006/redis_exporter) |
+| Host | `alerts/optional/host.yaml` | None — uses obstack's built-in OTel hostmetrics receiver |
+
+Activation:
+
+```bash
+cp alerts/optional/postgres.yaml alerts/
+docker compose -f docker-compose.yml -f compose/simple.yml restart prometheus
+```
+
+Each pack file's header comment lists the required exporter and what each alert covers. See `alerts/optional/README.md` for full details.
+
+---
+
 ## Adding your own alerts
 
 Drop a new YAML file into `alerts/` (any filename, valid Prometheus rule format). Prometheus will pick it up automatically — its `rule_files` glob is `/etc/prometheus/rules/*.yaml`.

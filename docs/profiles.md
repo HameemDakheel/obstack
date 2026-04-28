@@ -25,7 +25,7 @@ Most users never need to "upgrade" between profiles — they pick once and stay.
 | Profile | Target | RAM idle / peak | Retention | HA | Auth | Storage | Status |
 |---------|--------|-----------------|-----------|----|----|---------|--------|
 | **Simple** | Solo dev / indie SaaS, single VPS | ≤2 GB / ≤4 GB | 7 d | No | Caddy basic auth + Grafana login | Filesystem | ✅ **v1.0** |
-| **Standard** | Small team, single server (8 GB) | ≤4 GB / ≤8 GB | 30 d | No | OAuth2 (GitHub/Google) | Filesystem (optional MinIO) | 🔜 v1.1 |
+| **Standard** | Small team, single server (8 GB) | ≤4 GB / ≤8 GB | 30 d | No | Caddy basic auth + Grafana login | Filesystem (optional MinIO) | ✅ **v1.1** |
 | **Scale** | Growing team, multi-node | 16 GB+ | 90 d | Mimir HA / Loki HA / VictoriaMetrics cluster | OAuth2 + SSO | MinIO or external S3 | 🔜 v2 |
 | **Enterprise** | Regulated / compliance | Sized to load | 1+ year | Full HA + DR + replication | SAML, audit logs, multi-tenant | External S3 + replication | 🔜 v3 |
 
@@ -91,8 +91,9 @@ make restart      # stop + simple
 make logs         # tail logs
 make verify       # run scripts/verify_stack.sh
 make update       # pull images + recreate containers
-make demo         # add the OTel demo overlay (8+ GB RAM required)
-make demo-stop    # remove just the demo containers
+make standard     # bring up the Standard profile (8 GB host)
+make demo-up      # bring up the standalone examples/otel-demo (external client)
+make demo-down    # stop the demo client
 make config       # show the resolved compose config
 make clean        # destructive: stops and removes all volumes
 ```
@@ -114,7 +115,7 @@ Single VPS, ≤4 GB RAM?
                               └─ Enterprise (when v3 ships)
 ```
 
-**At v1, only Simple is shipped.** Operators on bigger machines can run Simple and just have headroom — there's no penalty for running below the profile's intended scale.
+**At v1.1, Simple and Standard are shipped.** Operators on bigger machines can run Simple and just have headroom — there's no penalty for running below the profile's intended scale.
 
 ---
 
@@ -160,23 +161,64 @@ Tunables via `.env`:
 
 Container limits are in `compose/simple.yml`. Adjust with caution — e.g. raising Prometheus memory headroom is fine, lowering Caddy below 64 MB will OOM under TLS handshakes.
 
-### Future profiles
+## Standard profile
+
+Targets a small team running on a single beefy server (~8 GB RAM). Same components as Simple — bigger limits, longer retention, no HA.
+
+### Tunables (Standard profile defaults)
+
+| Knob | Standard default | Effect |
+|------|------------------|--------|
+| `PROMETHEUS_RETENTION` | `30d` | Metrics retained for a month |
+| `VICTORIALOGS_RETENTION` | `30d` | Logs retained for a month |
+| `TEMPO_RETENTION_HOURS` | `168` | Trace blocks retained for 7 d |
+| `PYROSCOPE_RETENTION_HOURS` | `720` | Profiles retained for 30 d |
+
+Set these in `.env` (commented examples included in `.env.example` under "Standard profile defaults").
+
+### Resource limits
+
+Bumped per service in `compose/standard.yml`:
+
+| Service | Simple | Standard |
+|---------|--------|----------|
+| Prometheus | 384M | **768M** |
+| VictoriaLogs | 256M | **384M** |
+| Tempo | 512M | **768M** |
+| Pyroscope | 384M | **512M** |
+| OTel Collector | 256M | **384M** |
+| Grafana | 256M | **384M** |
+| Caddy | 128M | 128M (unchanged) |
+| cAdvisor | 128M | 128M (unchanged) |
+
+Total stack ceiling at Standard: ~3.4 GB. Realistic idle: ~700 MB-1.2 GB. Combined with OS overhead (~700 MB) you have **2.5-3 GB of headroom for queries, ingestion bursts, and your applications** on an 8 GB host.
+
+### Running it
+
+```bash
+make standard         # bring up Standard profile
+make standard-verify  # health check
+make standard-stop    # tear down
+```
+
+### Future profiles (Scale, Enterprise)
 
 Each future profile will document its own knobs in this file when it ships.
 
 ---
 
-## Demo overlay (orthogonal to profiles)
+## Demo client (orthogonal to profiles)
 
-The OTel demo overlay (`compose/otel-demo.yml`) is *additive* on top of any profile. It adds 7 demo apps that emit realistic telemetry. Run with:
+The OTel demo lives at [`examples/otel-demo/`](https://github.com/HameemDakheel/obstack/tree/main/examples/otel-demo) as a **standalone compose project** — not an obstack profile or overlay. It runs a 7-service subset of the official OpenTelemetry demo and emits OTLP to obstack's *public* endpoint with HTTP Basic auth — exactly the path real customer applications use.
 
 ```bash
-make demo
+make demo-up    # configure .env, compute auth header, start demo
+make demo-down  # stop demo
 ```
 
-The demo overlay is **not** a profile — it doesn't change the stack's resource shape, just adds extra application containers on top. It needs ~4 GB extra RAM, so on a 4 GB Simple-profile VPS you'll OOM. Use a bigger machine for evaluation/demo work.
+The demo needs ~6 GB RAM on its own. Running it alongside obstack on the same host means budgeting **12+ GB total**. Because it's a separate compose project, it shares no Docker network with obstack and stops cleanly without touching obstack's runtime.
 
-See the [Demo overlay README](https://github.com/HameemDakheel/obstack/blob/main/demo/README.md) for full details.
+See [`examples/otel-demo/README.md`](https://github.com/HameemDakheel/obstack/blob/main/examples/otel-demo/README.md) for full details.
 
 ---
 

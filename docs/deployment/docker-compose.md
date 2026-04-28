@@ -16,7 +16,10 @@ Recommended specs:
 |----------|-----|------|-----|
 | Hobby / dev (Simple) | 4 GB | 20 GB | 2 vCPU |
 | Small production (Simple) | 8 GB | 40 GB | 2-4 vCPU |
-| Multi-app production (future Standard) | 16 GB | 100 GB | 4 vCPU |
+| Standard profile (small team) | 8 GB | 60+ GB | 2-4 vCPU |
+| Standard + demo simultaneously | 12+ GB | 60+ GB | 4 vCPU |
+
+**Disk sizing for Standard:** at 30-day retention with moderate volume (~1 GB/day per signal × 4 signals × 30 days = ~120 GB peak), provision at least 60 GB for a low-volume team and 200 GB+ for a busy production deployment.
 
 Tested on Ubuntu 22.04 / 24.04. Should work on any modern Linux with Docker 24+.
 
