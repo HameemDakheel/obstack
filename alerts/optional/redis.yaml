@@ -1,0 +1,57 @@
+# obstack optional alert pack: Redis
+# Requires: redis_exporter (oliver006/redis_exporter) scraping your Redis
+# Activate: cp alerts/optional/redis.yaml alerts/ && restart prometheus
+
+groups:
+  - name: obstack-redis
+    interval: 30s
+    rules:
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 2m
+        labels:
+          severity: critical
+          pack: redis
+        annotations:
+          summary: "Redis instance {{ $labels.instance }} is down"
+          description: "redis_up == 0 for the past 2 minutes."
+
+      - alert: RedisMemoryHighUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.8 and redis_memory_max_bytes > 0
+        for: 5m
+        labels:
+          severity: warning
+          pack: redis
+        annotations:
+          summary: "Redis {{ $labels.instance }} memory >80% of maxmemory"
+          description: "{{ $value | humanizePercentage }} of configured maxmemory in use. Risk of evictions or OOM."
+
+      - alert: RedisEvictionsRising
+        expr: rate(redis_evicted_keys_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          pack: redis
+        annotations:
+          summary: "Redis {{ $labels.instance }} is evicting keys"
+          description: "{{ $value }} keys/sec evicted. Either maxmemory is too low or workload outgrew expectations."
+
+      - alert: RedisRejectedConnections
+        expr: rate(redis_rejected_connections_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          pack: redis
+        annotations:
+          summary: "Redis {{ $labels.instance }} is rejecting connections"
+          description: "{{ $value }} rejections/sec. maxclients limit hit; clients seeing connection-refused."
+
+      - alert: RedisReplicationLink
+        expr: redis_connected_slaves > 0 and redis_master_link_up == 0
+        for: 2m
+        labels:
+          severity: critical
+          pack: redis
+        annotations:
+          summary: "Redis replica {{ $labels.instance }} link to master down"
+          description: "Replica is not connected to its master. Replication is stalled."

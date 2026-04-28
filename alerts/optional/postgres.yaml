@@ -1,0 +1,57 @@
+# obstack optional alert pack: PostgreSQL
+# Requires: prometheus-postgres-exporter scraping your Postgres database
+# Activate: cp alerts/optional/postgres.yaml alerts/ && restart prometheus
+
+groups:
+  - name: obstack-postgres
+    interval: 30s
+    rules:
+      - alert: PostgresDown
+        expr: pg_up == 0
+        for: 2m
+        labels:
+          severity: critical
+          pack: postgres
+        annotations:
+          summary: "Postgres instance {{ $labels.instance }} is down"
+          description: "pg_up == 0 for the past 2 minutes. The exporter cannot connect to Postgres."
+
+      - alert: PostgresHighConnectionUsage
+        expr: sum by (instance) (pg_stat_activity_count) / on(instance) pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          pack: postgres
+        annotations:
+          summary: "Postgres {{ $labels.instance }} >80% of max_connections in use"
+          description: "{{ $value | humanizePercentage }} of max_connections actively used. Risk of connection-refused at the application layer."
+
+      - alert: PostgresReplicationLagHigh
+        expr: pg_replication_lag_seconds > 30
+        for: 5m
+        labels:
+          severity: warning
+          pack: postgres
+        annotations:
+          summary: "Postgres replica {{ $labels.instance }} is {{ $value }}s behind primary"
+          description: "Replication lag exceeded 30 seconds for 5 minutes. Read replicas may serve stale data."
+
+      - alert: PostgresLongRunningTransaction
+        expr: max by (instance, datname) (pg_stat_activity_max_tx_duration{datname!~"template.*"}) > 300
+        for: 5m
+        labels:
+          severity: warning
+          pack: postgres
+        annotations:
+          summary: "Postgres long-running transaction on {{ $labels.instance }}/{{ $labels.datname }}"
+          description: "A transaction has been open for {{ $value }} seconds. Holds locks; may bloat tables and prevent VACUUM."
+
+      - alert: PostgresDeadlocksRising
+        expr: rate(pg_stat_database_deadlocks[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          pack: postgres
+        annotations:
+          summary: "Postgres deadlock rate climbing on {{ $labels.instance }}"
+          description: "{{ $value }} deadlocks/sec average over 5 minutes. Investigate transaction ordering."

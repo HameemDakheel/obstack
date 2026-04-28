@@ -1,0 +1,41 @@
+# obstack optional alert pack: Nginx
+# Requires: nginx-prometheus-exporter scraping your Nginx instance
+# Activate: cp alerts/optional/nginx.yaml alerts/ && restart prometheus
+#
+# NOTE: Open-source nginx + nginx-prometheus-exporter only exposes coarse
+# connection metrics (no per-status-code rates). For 5xx-rate alerts you
+# need NGINX Plus or a different exporter (e.g., GoAccess, lua-resty-prometheus).
+
+groups:
+  - name: obstack-nginx
+    interval: 30s
+    rules:
+      - alert: NginxDown
+        expr: nginx_up == 0
+        for: 2m
+        labels:
+          severity: critical
+          pack: nginx
+        annotations:
+          summary: "Nginx instance {{ $labels.instance }} is down"
+          description: "nginx_up == 0 for the past 2 minutes."
+
+      - alert: NginxConnectionWaitingHigh
+        expr: nginx_connections_waiting / nginx_connections_active > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          pack: nginx
+        annotations:
+          summary: "Nginx {{ $labels.instance }} has high keep-alive waiting ratio"
+          description: "{{ $value | humanizePercentage }} of active connections are idle/waiting. May indicate slow clients or upstream stalls."
+
+      - alert: NginxRequestRateDropped
+        expr: rate(nginx_http_requests_total[5m]) == 0 and rate(nginx_http_requests_total[1h] offset 1h) > 1
+        for: 10m
+        labels:
+          severity: warning
+          pack: nginx
+        annotations:
+          summary: "Nginx {{ $labels.instance }} request rate dropped to 0"
+          description: "Nginx accepted >1 req/s in the previous hour but 0 in the last 5 minutes. Possible upstream outage or DNS failure."

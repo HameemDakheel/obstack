@@ -1,0 +1,61 @@
+# obstack optional alert pack: Host (uses OTel hostmetrics built into v1.1+)
+# Requires: nothing extra — the hostmetrics receiver is shipped in obstack.
+# Activate: cp alerts/optional/host.yaml alerts/ && restart prometheus
+#
+# Metric names below reflect the actual Prometheus-translated names emitted
+# by the OTel Collector hostmetrics receiver via remote-write (system_*_total
+# / *_bytes counters and gauges), NOT the OTel SDK utilization gauges.
+
+groups:
+  - name: obstack-host
+    interval: 30s
+    rules:
+      - alert: HostHighCPULoad
+        expr: avg(rate(system_cpu_time_seconds_total{state="idle"}[5m])) / avg(rate(system_cpu_time_seconds_total[5m])) < 0.1
+        for: 10m
+        labels:
+          severity: warning
+          pack: host
+        annotations:
+          summary: "Host CPU is saturated (idle < 10%)"
+          description: "Idle CPU averaged {{ $value | humanizePercentage }} over 10 minutes. Something is hogging the host."
+
+      - alert: HostMemoryPressure
+        expr: sum(system_memory_usage_bytes{state=~"used|buffered|cached|slab_reclaimable|slab_unreclaimable"}) / sum(system_memory_usage_bytes) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          pack: host
+        annotations:
+          summary: "Host memory >90% utilized"
+          description: "{{ $value | humanizePercentage }} of host memory consumed. Approaching OOM risk."
+
+      - alert: HostDiskUsageHigh
+        expr: system_filesystem_usage_bytes{state="used", mountpoint!~"/(boot|run|sys|proc|dev).*"} / on(mountpoint, device) (sum by (mountpoint, device) (system_filesystem_usage_bytes)) > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          pack: host
+        annotations:
+          summary: "Filesystem {{ $labels.mountpoint }} >85% full"
+          description: "Filesystem at {{ $value | humanizePercentage }}. Plan capacity now; disk-full crashes are messy."
+
+      - alert: HostHighDiskIOWait
+        expr: avg(rate(system_cpu_time_seconds_total{state="wait"}[5m])) / avg(rate(system_cpu_time_seconds_total[5m])) > 0.3
+        for: 5m
+        labels:
+          severity: warning
+          pack: host
+        annotations:
+          summary: "Host CPU iowait >30%"
+          description: "iowait averaged {{ $value | humanizePercentage }} over 5 minutes. Disk-bound workload or failing storage."
+
+      - alert: HostNetworkErrorsRising
+        expr: rate(system_network_errors_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          pack: host
+        annotations:
+          summary: "Host network errors on {{ $labels.device }} ({{ $labels.direction }})"
+          description: "{{ $value }} errors/sec. Possibly faulty NIC, cable, or driver issue."
