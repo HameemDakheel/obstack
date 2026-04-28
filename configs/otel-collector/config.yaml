@@ -19,6 +19,21 @@ receivers:
           static_configs:
             - targets: ['localhost:8888']
 
+  # Host metrics — host CPU/RAM/disk/network/load (v1.1+).
+  # Requires the otel-collector container to bind-mount / as /hostfs:ro.
+  hostmetrics:
+    collection_interval: 30s
+    root_path: /hostfs
+    scrapers:
+      cpu:
+      memory:
+      disk:
+      filesystem:
+      network:
+      load:
+      paging:
+      processes:
+
 processors:
   memory_limiter:
     check_interval: 5s
@@ -73,7 +88,7 @@ service:
       address: 0.0.0.0:8888
   pipelines:
     metrics:
-      receivers: [otlp, prometheus/self]
+      receivers: [otlp, prometheus/self, hostmetrics]
       processors: [memory_limiter, resourcedetection, batch]
       exporters: [prometheusremotewrite]
     logs:

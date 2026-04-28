@@ -52,6 +52,7 @@ services:
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     volumes:
       - ./configs/otel-collector/config.yaml:/etc/otelcol-contrib/config.yaml:ro
+      - /:/hostfs:ro,rslave    # for hostmetrics receiver (v1.1+)
     expose:
       - "4317"   # gRPC OTLP (Caddy fronts this)
       - "4318"   # HTTP OTLP
