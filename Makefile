@@ -5,7 +5,7 @@ COMPOSE        := docker compose -f docker-compose.yml
 SIMPLE_FLAGS   := -f compose/simple.yml
 STANDARD_FLAGS := -f compose/standard.yml
 
-.PHONY: help simple stop restart logs verify update config clean standard standard-stop standard-logs standard-verify
+.PHONY: help simple stop restart logs verify update config clean standard standard-stop standard-logs standard-verify demo-up demo-down demo-logs
 
 help: ## Show this help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -53,3 +53,12 @@ clean: ## Stop stack AND remove volumes (DESTRUCTIVE - wipes all data).
 	@echo "This will delete all telemetry data. Press Ctrl-C to abort, Enter to continue."
 	@read _
 	$(COMPOSE) $(SIMPLE_FLAGS) down -v
+
+demo-up: ## Bring up examples/otel-demo as an external test client (needs ~6 GB RAM).
+	./scripts/demo-up.sh
+
+demo-down: ## Stop the demo client.
+	cd examples/otel-demo && docker compose down
+
+demo-logs: ## Tail demo client logs (Ctrl-C to exit).
+	cd examples/otel-demo && docker compose logs -f --tail=100
