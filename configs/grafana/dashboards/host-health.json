@@ -1,0 +1,90 @@
+{
+  "title": "obstack · Host Health",
+  "uid": "obstack-host-health",
+  "tags": ["obstack", "host", "hostmetrics"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Host CPU utilization (by state)",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "sum by (state) (rate(system_cpu_time_seconds_total[1m])) / on() group_left sum(rate(system_cpu_time_seconds_total[1m]))",
+        "legendFormat": "{{state}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "percentunit", "max": 1 }, "overrides": [] }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Host memory usage (by state)",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "system_memory_usage_bytes",
+        "legendFormat": "{{state}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Filesystem usage (per mountpoint)",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "system_filesystem_usage_bytes{state=\"used\"} / on(mountpoint, device) (sum by (mountpoint, device) (system_filesystem_usage_bytes))",
+        "legendFormat": "{{mountpoint}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "percentunit", "max": 1 }, "overrides": [] }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "CPU load average",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [
+        { "expr": "system_cpu_load_average_1m", "legendFormat": "1m", "refId": "A" },
+        { "expr": "system_cpu_load_average_5m", "legendFormat": "5m", "refId": "B" },
+        { "expr": "system_cpu_load_average_15m", "legendFormat": "15m", "refId": "C" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Network throughput (bytes/s)",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "rate(system_network_io_bytes_total[1m])",
+        "legendFormat": "{{direction}} {{device}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "Bps" }, "overrides": [] }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Disk I/O (bytes/s)",
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+      "datasource": { "uid": "prometheus", "type": "prometheus" },
+      "targets": [{
+        "expr": "rate(system_disk_io_bytes_total[1m])",
+        "legendFormat": "{{direction}} {{device}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "Bps" }, "overrides": [] }
+    }
+  ]
+}
