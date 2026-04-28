@@ -12,7 +12,64 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Real screenshots in README and docs (manual capture post-launch)
 - First push of release tags to origin
 - Submission of obstack templates to Coolify Templates / Dokploy Templates / CapRover One-Click Apps registries
-- v1.1.0 — Standard profile, host metrics, opinionated alert packs (Postgres/Nginx/Redis/host), demo redesign as standalone external client
+- v1.2.0 — OAuth2 login for Grafana (deferred from v1.1)
+
+---
+
+## [v1.1.0] — 2026-04-27
+
+Standard profile, host metrics, opinionated alert packs, demo redesign.
+
+### Added
+- **Standard profile** (`compose/standard.yml`) — 8 GB host target, 30-day retention. Bumped resource limits per service. New `make standard`, `make standard-stop`, `make standard-logs`, `make standard-verify`.
+- **OTel Collector `hostmetrics` receiver** — host-level CPU/RAM/disk/network/load metrics. otel-collector now bind-mounts `/` as `/hostfs:ro,rslave`. No new container.
+- **Host Health dashboard** (`configs/grafana/dashboards/host-health.json`) — 6 panels: CPU by state, memory by state, filesystem usage, load average, network throughput, disk I/O.
+- **Optional alert packs** (`alerts/optional/{postgres,nginx,redis,host}.yaml`) — opt-in via `cp` to `alerts/`. Each pack documents its required exporter.
+- **`alerts/optional/README.md`** — activation/deactivation instructions and pack catalogue.
+- **`examples/`** top-level directory for standalone test workloads.
+- **`examples/otel-demo/`** — standalone compose project that runs the official OTel demo subset and emits OTLP to obstack's *public* endpoint (`https://${DOMAIN}/v1/...`) with HTTP Basic auth — same path real customer apps use. Includes `.env.example` and a rewritten `README.md`.
+- **`scripts/demo-up.sh`** — helper that loads `examples/otel-demo/.env`, computes the Basic-auth header, and runs `docker compose up -d`.
+- **Makefile targets** `demo-up`, `demo-down`, `demo-logs`.
+- **Standard-profile retention notes** in `.env.example`.
+- **Documentation** — Standard profile fully documented in `docs/profiles.md`; Simple→Standard upgrade procedure in `docs/operations/upgrade.md`; optional alert packs in `docs/reference/default-alerts.md`.
+
+### Changed
+- `docker-compose.yml` — `otel-collector` service mounts `/:/hostfs:ro,rslave` so the hostmetrics receiver can read host metrics from inside Docker.
+- `configs/otel-collector/config.yaml` — hostmetrics receiver added to the metrics pipeline.
+- `docs/deployment/docker-compose.md` — host-sizing recommendations updated for Standard profile and Standard+demo.
+
+### Removed (BREAKING for v1.0.x users using `make demo`)
+- **`compose/otel-demo.yml`** — the internal-network demo overlay is replaced by the standalone `examples/otel-demo/` compose project. The old approach used internal Docker hostnames and bypassed Caddy/basic-auth — it was a false-positive test. The new approach exercises the production OTLP path.
+- **`demo/` directory** — its content moved into `examples/otel-demo/README.md`.
+- **`make demo`, `make demo-stop`, `make demo-logs`** Makefile targets — replaced by `make demo-up`, `make demo-down`, `make demo-logs`. Different semantics: the new targets run a standalone external client; the old ones layered the demo into obstack's compose.
+
+### Migration from v1.0.x
+
+If you were running `make demo` from v1.0.x:
+
+```bash
+# 1. Stop and discard the old demo overlay (this used the same containers
+#    obstack does, so be careful — only run if you're not running obstack).
+docker compose -f docker-compose.yml -f compose/simple.yml down
+
+# 2. Pull v1.1.0.
+git pull
+git checkout v1.1.0
+
+# 3. Bring obstack back up (no demo).
+make simple
+
+# 4. Configure the standalone demo client.
+cd examples/otel-demo
+cp .env.example .env
+# Edit .env to set DEMO_OBSTACK_ENDPOINT and credentials.
+cd -
+
+# 5. Bring up the demo as a separate stack.
+make demo-up
+```
+
+The demo's apps now run as a separate Docker compose project, talking to obstack over the public OTLP path — exactly how a real customer's apps would integrate.
 
 ---
 
@@ -158,7 +215,8 @@ obstack follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
 
 Pre-release versions (`v1.0.0-alpha.N`) are used during phased development. Once `v1.0.0` ships, alphas end.
 
-[Unreleased]: https://github.com/HameemDakheel/obstack/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/HameemDakheel/obstack/compare/v1.1.0...HEAD
+[v1.1.0]: https://github.com/HameemDakheel/obstack/releases/tag/v1.1.0
 [v1.0.1]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.1
 [v1.0.0]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0
 [v1.0.0-alpha.4]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0-alpha.4
