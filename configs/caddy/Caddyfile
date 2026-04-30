@@ -17,8 +17,11 @@
         reverse_proxy grafana:3000
     }
 
-    # OTLP HTTP ingestion (basic auth required)
-    handle_path /v1/* {
+    # OTLP HTTP ingestion (basic auth required).
+    # Use `handle` (NOT `handle_path`) so the /v1 prefix is preserved when
+    # forwarding to otel-collector — the OTLP receiver expects /v1/traces,
+    # /v1/metrics, /v1/logs.
+    handle /v1/* {
         basic_auth {
             {$BASIC_AUTH_USER:ingest} {$BASIC_AUTH_HASH:$2a$14$1234567890123456789012abcdefghijklmnopqrstuvwxyzABCDEFGHIJ}
         }
@@ -36,4 +39,21 @@
             versions h2c 2
         }
     }
+}
+
+# Internal Docker hostname site (for in-network clients like examples/otel-demo).
+# Forces internal self-signed cert (no ACME) and reuses the same auth + routing.
+caddy, obstack-caddy {
+    tls internal
+    encode gzip zstd
+    handle / {
+        reverse_proxy grafana:3000
+    }
+    handle /v1/* {
+        basic_auth {
+            {$BASIC_AUTH_USER:ingest} {$BASIC_AUTH_HASH:$2a$14$1234567890123456789012abcdefghijklmnopqrstuvwxyzABCDEFGHIJ}
+        }
+        reverse_proxy otel-collector:4318
+    }
+    reverse_proxy grafana:3000
 }
