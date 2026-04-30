@@ -1,0 +1,67 @@
+# Complete OTel collector config for obstack-demo.
+# Replaces upstream src/otel-collector/otelcol-config.yml (which exports to
+# jaeger/prometheus/opensearch — backends we disabled).
+#
+# Keeps the same receivers + processors + spanmetrics connector as upstream
+# but routes ALL signals through a single OTLP/HTTP exporter to obstack.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: ${env:OTEL_COLLECTOR_HOST}:${env:OTEL_COLLECTOR_PORT_GRPC}
+      http:
+        endpoint: ${env:OTEL_COLLECTOR_HOST}:${env:OTEL_COLLECTOR_PORT_HTTP}
+        cors:
+          allowed_origins:
+            - "http://*"
+            - "https://*"
+  # hostmetrics receiver dropped — obstack collects host metrics itself.
+
+processors:
+  batch:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 75
+    spike_limit_percentage: 15
+  resourcedetection:
+    detectors: [env, system]
+    timeout: 2s
+    override: false
+
+connectors:
+  spanmetrics:
+
+exporters:
+  debug:
+    verbosity: normal
+  otlphttp/obstack:
+    endpoint: ${env:DEMO_OBSTACK_ENDPOINT}
+    headers:
+      authorization: ${env:DEMO_OBSTACK_BASIC_AUTH}
+      # Caddy's site block matches Host: localhost (DOMAIN env in obstack).
+      # We connect via the `caddy` Docker DNS name so SNI is `caddy`, but the
+      # cert + site matcher are bound to `localhost`. Override the HTTP Host
+      # header so it routes correctly on the obstack side.
+      Host: localhost
+    tls:
+      insecure_skip_verify: ${env:DEMO_OBSTACK_INSECURE}
+      server_name_override: localhost
+
+service:
+  telemetry:
+    logs:
+      level: info
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [debug, otlphttp/obstack, spanmetrics]
+    metrics:
+      receivers: [otlp, spanmetrics]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [debug, otlphttp/obstack]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [debug, otlphttp/obstack]

@@ -27,3 +27,8 @@ logs/
 # Build artifacts (none expected at v1, kept for safety)
 dist/
 build/
+
+# OTel demo — cloned at runtime by scripts/demo-up.sh
+examples/otel-demo/upstream/
+# Demo runtime credentials (plaintext basic-auth)
+examples/otel-demo/.env

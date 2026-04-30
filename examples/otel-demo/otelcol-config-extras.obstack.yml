@@ -1,0 +1,3 @@
+# obstack-demo: no-op extras file. The main config (otelcol-config.obstack.yml)
+# already contains the obstack OTLP exporter and pipelines. Kept here because
+# the upstream collector entrypoint expects --config=/etc/otelcol-config-extras.yml.

@@ -54,11 +54,18 @@ clean: ## Stop stack AND remove volumes (DESTRUCTIVE - wipes all data).
 	@read _
 	$(COMPOSE) $(SIMPLE_FLAGS) down -v
 
-demo-up: ## Bring up examples/otel-demo as an external test client (needs ~6 GB RAM).
+DEMO_COMPOSE := docker compose \
+	--env-file examples/otel-demo/upstream/.env \
+	--env-file examples/otel-demo/.env \
+	-f examples/otel-demo/upstream/docker-compose.yml \
+	-f examples/otel-demo/docker-compose.override.yml \
+	-p obstack-demo
+
+demo-up: ## Bring up the OTel demo as an external test client (needs ~6 GB RAM).
 	./scripts/demo-up.sh
 
 demo-down: ## Stop the demo client.
-	cd examples/otel-demo && docker compose down
+	$(DEMO_COMPOSE) down
 
 demo-logs: ## Tail demo client logs (Ctrl-C to exit).
-	cd examples/otel-demo && docker compose logs -f --tail=100
+	$(DEMO_COMPOSE) logs -f --tail=100

@@ -1,0 +1,67 @@
+# obstack overrides for the upstream OTel demo (v2.2.0).
+#
+# Forwards all telemetry through the bundled otel-collector to obstack's
+# public OTLP endpoint and disables the bundled observability backends
+# (jaeger, grafana, prometheus, opensearch) — obstack handles those.
+#
+# Run with:
+#   docker compose -f upstream/docker-compose.yml -f docker-compose.override.yml --env-file .env up -d
+
+networks:
+  obstack:
+    name: otel-jps_obs-net
+    external: true
+
+services:
+  otel-collector:
+    container_name: obstack-demo-otelcol
+    # Join obstack's network so we can reach `caddy:443` directly without
+    # relying on host.docker.internal (which Linux Docker can't always route
+    # back to the host's published port from inside a non-default network).
+    networks:
+      default:
+      obstack:
+        aliases: [demo-otelcol]
+    environment:
+      DEMO_OBSTACK_ENDPOINT: ${DEMO_OBSTACK_ENDPOINT}
+      DEMO_OBSTACK_BASIC_AUTH: ${DEMO_OBSTACK_BASIC_AUTH}
+      DEMO_OBSTACK_INSECURE: ${DEMO_OBSTACK_INSECURE:-true}
+    # Replace ALL volumes — upstream mounts a config that exports to
+    # jaeger/prometheus/opensearch (which we disabled). We mount a clean
+    # one that exports straight to obstack via OTLP/HTTP.
+    volumes: !override
+      - /home/hameem/workspace/OTel-jps/examples/otel-demo/otelcol-config.obstack.yml:/etc/otelcol-config.yml:ro
+      - /home/hameem/workspace/OTel-jps/examples/otel-demo/otelcol-config-extras.obstack.yml:/etc/otelcol-config-extras.yml:ro
+    depends_on: !reset []
+
+  # Drop jaeger+grafana from frontend-proxy's deps (they're disabled).
+  # Also satisfy TELEMETRY_DOCS_* env vars (envoy template requires non-empty).
+  frontend-proxy:
+    depends_on: !override
+      frontend:
+        condition: service_started
+      load-generator:
+        condition: service_started
+    environment:
+      TELEMETRY_DOCS_HOST: localhost
+      TELEMETRY_DOCS_PORT: 9999
+
+  # product-catalog: 20M default OOM-kills the Go service; bump memory.
+  # RELOAD_INTERVAL not set in upstream .env; provide a default.
+  product-catalog:
+    environment:
+      PRODUCT_CATALOG_RELOAD_INTERVAL: 10
+      GOMEMLIMIT: 96MiB
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  jaeger:
+    profiles: ["disabled"]
+  grafana:
+    profiles: ["disabled"]
+  prometheus:
+    profiles: ["disabled"]
+  opensearch:
+    profiles: ["disabled"]
