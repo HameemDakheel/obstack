@@ -73,6 +73,7 @@ nav:
       - Upgrade: operations/upgrade.md
       - Troubleshooting: operations/troubleshooting.md
       - Demo tutorial (Astronomy Shop): operations/demo-tutorial.md
+      - Demo recipes (load + failures): operations/demo-recipes.md
       - Runbooks:
           - Disk full: operations/runbooks/disk-full.md
           - Service down: operations/runbooks/service-down.md
