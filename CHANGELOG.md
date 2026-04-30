@@ -10,9 +10,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Planned
 - Real screenshots in README and docs (manual capture post-launch)
-- First push of release tags to origin
 - Submission of obstack templates to Coolify Templates / Dokploy Templates / CapRover One-Click Apps registries
 - v1.2.0 — OAuth2 login for Grafana (deferred from v1.1)
+
+---
+
+## [v1.1.1] — 2026-04-29
+
+Demo redesign + Caddy OTLP routing fix + Astronomy Shop dashboard, recipes, tutorial, and CONTRIBUTING.
+
+### Fixed
+- **Caddyfile `/v1/*` routing** — `handle_path` was stripping the `/v1` prefix before reverse-proxying to otel-collector:4318, so OTLP requests landed as `/traces`/`/metrics`/`/logs` and 404'd. Switched to `handle` so the prefix is preserved. The public OTLP path now actually works.
+- **Caddy hostname matching** — added a second site block for `caddy` / `obstack-caddy` (Docker-internal aliases) with `tls internal`, so in-network clients on `obs-net` can post OTLP without Host-header tricks. Never exposed publicly.
+
+### Added
+- **Astronomy Shop demo dashboard** (`configs/grafana/dashboards/demo-app.json`) — 13 panels using `traces_span_metrics_*` so every demo SDK contributes: request/error rate, p95/p99 latency by service, top slowest spans, top erroring spans, span throughput by kind, demo logs panel.
+- **Demo tutorial** (`docs/operations/demo-tutorial.md`) — 7-step hands-on guide: credential setup, bring-up, trace→span→logs drill-down, failure injection, alert pack activation, cleanup.
+- **Demo recipes** (`docs/operations/demo-recipes.md`) — 8 hands-on scenarios covering all 15 OTel demo feature flags (`cartFailure`, `paymentFailure` percentage variants, `productCatalogFailure`, `recommendationCacheFailure`, `adHighCpu`, `adManualGc`, `adFailure`, `imageSlowLoad`, `emailMemoryLeak`, `kafkaQueueProblems`, `loadGeneratorFloodHomepage`, `failedReadinessProbe`, `paymentUnreachable`, `llmInaccurateResponse`, `llmRateLimitError`) plus Locust load-generator usage.
+- **CONTRIBUTING.md** — dev setup, repo layout, conventions for adding dashboards/alerts/configs, Conventional Commits, PR process, release flow, bug-report template, code of conduct.
+
+### Changed
+- **`examples/otel-demo/` redesigned end-to-end** — replaces the v1.1.0 7-service subset (which couldn't actually run because OTel demo's frontend/checkout have hard deps on kafka/postgres/email/etc.) with the full official OTel demo v2.2.0 cloned at runtime + a thin override layer. The override disables jaeger/grafana/prometheus/opensearch (obstack does those), reroutes the bundled otel-collector to obstack via OTLP/HTTP+Basic-auth, joins `obs-net`, and patches a few env-var gaps in upstream's compose. `scripts/demo-up.sh` auto-clones upstream on first run.
+- `examples/otel-demo/upstream/` and `examples/otel-demo/.env` are now `.gitignore`d (cloned at runtime; contains plaintext credentials).
+
+### Migration
+
+If you were using the v1.1.0 demo (`make demo-up`), nothing changes for you — the same command works, but the underlying compose project is different. State from the old demo is preserved (volumes); just re-run `make demo-up`. First post-upgrade run will clone upstream into `examples/otel-demo/upstream/` and pull demo images (~5 min).
+
+If you wrote custom dashboards or alerts assuming the old 7-service subset, expand them — there are 17 services emitting telemetry now.
 
 ---
 
@@ -215,7 +240,8 @@ obstack follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
 
 Pre-release versions (`v1.0.0-alpha.N`) are used during phased development. Once `v1.0.0` ships, alphas end.
 
-[Unreleased]: https://github.com/HameemDakheel/obstack/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/HameemDakheel/obstack/compare/v1.1.1...HEAD
+[v1.1.1]: https://github.com/HameemDakheel/obstack/releases/tag/v1.1.1
 [v1.1.0]: https://github.com/HameemDakheel/obstack/releases/tag/v1.1.0
 [v1.0.1]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.1
 [v1.0.0]: https://github.com/HameemDakheel/obstack/releases/tag/v1.0.0

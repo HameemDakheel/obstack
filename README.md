@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Stars](https://img.shields.io/github/stars/HameemDakheel/obstack?style=social)](https://github.com/HameemDakheel/obstack/stargazers)
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/HameemDakheel/obstack/releases)
+[![Version](https://img.shields.io/badge/version-v1.1.1-blue)](https://github.com/HameemDakheel/obstack/releases)
 [![Validate](https://github.com/HameemDakheel/obstack/actions/workflows/validate.yml/badge.svg)](https://github.com/HameemDakheel/obstack/actions/workflows/validate.yml)
 [![Docs](https://github.com/HameemDakheel/obstack/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/HameemDakheel/obstack/actions/workflows/deploy-docs.yml)
 

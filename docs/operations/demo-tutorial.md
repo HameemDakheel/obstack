@@ -163,6 +163,9 @@ That trace → log correlation working out of the box is the entire point of LGT
 
 ## Step 5 — Test failure injection
 
+> **Tip:** for a complete catalogue of the 15 demo feature flags and 8 ready-made scenarios (load spikes, slow traces, memory leaks, kafka backpressure, etc.), see **[Demo recipes](demo-recipes.md)**.
+
+
 The OTel demo has built-in feature flags that cause specific services to fail or slow down. The demo's load-generator hits them periodically — but you can flip them yourself:
 
 1. Browse to <http://localhost:8080/feature/> (the flag UI).

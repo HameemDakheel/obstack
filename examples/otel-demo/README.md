@@ -73,6 +73,12 @@ cp .env.example .env  # then edit credentials
 ../../scripts/demo-up.sh
 ```
 
+## Driving traffic and failures
+
+The demo ships with a feature-flag UI (<http://localhost:8080/feature/>) and a Locust web UI (<http://localhost:8080/loadgen/>) that let you inject specific failure scenarios — cart errors, slow images, memory leaks, kafka backpressure, traffic floods, and more.
+
+See **[Demo recipes](../../docs/operations/demo-recipes.md)** for 8 hands-on scenarios covering all 15 demo feature flags plus how to drive Locust at custom user counts.
+
 ## What you should see
 
 Within ~90 seconds:
